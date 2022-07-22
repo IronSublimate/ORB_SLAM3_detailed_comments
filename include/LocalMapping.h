@@ -182,13 +182,14 @@ protected:
     void InitializeIMU(float priorG = 1e2, float priorA = 1e6, bool bFirst = false);
     void ScaleRefinement();
 
+    //hyx:FIXME:感觉应该改成atomic的，判断是不是正在初始化是在Tracking线程里调用的
     bool bInitializing;
 
     Eigen::MatrixXd infoInertial;
     int mNumLM;
     int mNumKFCulling;
 
-    float mTinit;
+    float mTinit; //hyx:IMU初始化第一帧和最后一帧的时间差
 
     int countRefinement;
 

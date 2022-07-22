@@ -165,6 +165,7 @@ void LocalMapping::Run()
             int num_edges_BA = 0;
 
             // 已经处理完队列中的最后的一个关键帧，并且闭环检测没有请求停止LocalMapping
+            // hyx 感觉可以和上面的那个if合并
             if(!CheckNewKeyFrames() && !stopRequested())
             {
                 // 当前地图中关键帧数目大于2个
@@ -260,7 +261,8 @@ void LocalMapping::Run()
                 if ((mTinit<50.0f) && mbInertial)
                 {
                     // Step 9.1 根据条件判断是否进行VIBA1（IMU第二阶段初始化）
-                    // 条件：1、当前关键帧所在的地图还未完成IMU初始化---并且--------2、正常跟踪状态----------
+                    // 条件：1、当前关键帧所在的地图还未完成IMU初始化（hyx 应该是已经完成IMU第一阶段初始化）---并且--------2、正常跟踪状态----------
+                    // hyx Map::isImuInitialized的条件变量只会在IMU第一阶段初始化和LoopClosing里会变成true
                     if(mpCurrentKeyFrame->GetMap()->isImuInitialized() && mpTracker->mState==Tracking::OK) // Enter here everytime local-mapping is called
                     {
                         // 当前关键帧所在的地图还未完成VIBA 1
@@ -1540,6 +1542,7 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA)
     // Retrieve all keyframe in temporal order
     // 按照顺序存放目前地图里的关键帧，顺序按照前后顺序来，包括当前关键帧
     list<KeyFrame*> lpKF;
+    //hyx:这个lpKF没用，就是为了初始化pKF的，完全可以写个递归初始化pKF，作者不会
     KeyFrame* pKF = mpCurrentKeyFrame;
     while(pKF->mPrevKF)
     {
@@ -1548,6 +1551,7 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA)
     }
     lpKF.push_front(pKF);
     // 同样内容再构建一个和lpKF一样的容器vpKF
+    // vpKF
     vector<KeyFrame*> vpKF(lpKF.begin(),lpKF.end());
     if(vpKF.size()<nMinKF)
         return;
@@ -1620,7 +1624,7 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA)
 
     mScale=1.0;
 
-    // 暂时没发现在别的地方出现过
+    // 暂时没发现在别的地方出现过 hyx确实没有是不是应该是mTInit
     mInitTime = mpTracker->mLastFrame.mTimeStamp-vpKF.front()->mTimeStamp;
 
     std::chrono::steady_clock::time_point t0 = std::chrono::steady_clock::now();
@@ -1865,9 +1869,11 @@ void LocalMapping::ScaleRefinement()
     mRwg = Eigen::Matrix3d::Identity();
     mScale=1.0;
 
+    //hyx这个时间没用
     std::chrono::steady_clock::time_point t0 = std::chrono::steady_clock::now();
     // 优化重力方向与尺度
     Optimizer::InertialOptimization(mpAtlas->GetCurrentMap(), mRwg, mScale);
+    //hyx这个时间没用
     std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
 
     if (mScale<1e-1) // 1e-1
