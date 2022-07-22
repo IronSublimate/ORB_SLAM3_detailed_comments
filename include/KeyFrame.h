@@ -349,6 +349,10 @@ public:
 
 
     // Variables used by loop closing
+    // hyx:local_mapping IMU初始化也用到了
+    // hyx:这里GBA是 Global Bundle Adjustment的意思
+    // hyx:这里Bef是 Before 的意思
+    // hyx:这里Tcw可能是Transformation camera to world
     Sophus::SE3f mTcwGBA;
     Sophus::SE3f mTcwBefGBA;
     Eigen::Vector3f mVwbGBA;
