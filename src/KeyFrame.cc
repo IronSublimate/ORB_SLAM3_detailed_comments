@@ -491,7 +491,7 @@ void KeyFrame::UpdateConnections(bool upParent)
     int th = 15;
 
     // vPairs记录与其它关键帧共视帧数大于th的关键帧
-    // pair<int,KeyFrame*>将关键帧的权重写在前面，关键帧写在后面方便后面排序
+    // pair<int,KeyFrame*>将关键帧的权重写在前面，关键帧写在后面方便后面排序，权重到关键帧的映射，
     vector<pair<int, KeyFrame *>> vPairs;
     vPairs.reserve(KFcounter.size());
     if (!upParent)
@@ -529,6 +529,7 @@ void KeyFrame::UpdateConnections(bool upParent)
 
     //  Step 4 对共视程度比较高的关键帧对更新连接关系及权重（从大到小）
     // vPairs里存的都是相互共视程度比较高的关键帧和共视权重，接下来由大到小进行排序
+    // hyx：这里也写的比较sb，排序的时候倒着写就行了
     sort(vPairs.begin(), vPairs.end());  // sort函数默认升序排列
     // 将排序后的结果分别组织成为两种数据类型
     list<KeyFrame *> lKFs;
