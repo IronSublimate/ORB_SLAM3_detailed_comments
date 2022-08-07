@@ -22,7 +22,7 @@
 
 namespace ORB_SLAM3
 {
-
+using namespace std;
 long unsigned int Map::nNextId = 0;
 
 Map::Map()

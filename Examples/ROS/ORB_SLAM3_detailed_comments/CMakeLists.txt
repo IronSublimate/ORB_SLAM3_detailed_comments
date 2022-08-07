@@ -30,7 +30,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall  -O3 -march=native")
 set(CMAKE_CXX_STANDARD 14)
 add_definitions(-DCOMPILEDWITHC11)
 
-LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../../../cmake_modules)
+#LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../../../cmake_modules)
 
 find_package(OpenCV 4 REQUIRED)
 #if(NOT OpenCV_FOUND)
@@ -42,14 +42,18 @@ find_package(OpenCV 4 REQUIRED)
 
 find_package(Eigen3 REQUIRED)
 find_package(Pangolin REQUIRED)
+find_package(g2o REQUIRED)
+
 
 include_directories(
         ${PROJECT_SOURCE_DIR}
         ${PROJECT_SOURCE_DIR}/../../../
         ${PROJECT_SOURCE_DIR}/../../../include
         ${PROJECT_SOURCE_DIR}/../../../include/CameraModels
-        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/Sophus
+#        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/Sophus
         ${Pangolin_INCLUDE_DIRS}
+        ${Sophus_INCLUDE_DIRS}
+        ${G2O_INCLUDE_DIRS}
 )
 
 set(LIBS
@@ -57,8 +61,10 @@ set(LIBS
         ${EIGEN3_LIBS}
         ${Pangolin_LIBRARIES}
         ${PROJECT_SOURCE_DIR}/../../../Thirdparty/DBoW2/lib/libDBoW2.so
-        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/g2o/lib/libg2o.so
+#        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/g2o/lib/libg2o.so
         ${PROJECT_SOURCE_DIR}/../../../lib/libORB_SLAM3.so
+#        ${DBoW2_LIBS}
+        g2o_core g2o_stuff g2o_types_sba g2o_types_sim3 g2o_solver_csparse g2o_csparse_extension
         -lboost_system
         )
 

@@ -35,7 +35,7 @@
 
 namespace ORB_SLAM3
 {
-
+using namespace std;
 Verbose::eLevel Verbose::th = Verbose::VERBOSITY_NORMAL;
 
 /**

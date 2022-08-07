@@ -29,7 +29,7 @@
 
 namespace ORB_SLAM3
 {
-
+using namespace std;
 /**
  * @brief 局部地图线程构造函数
  * @param pSys 系统类指针

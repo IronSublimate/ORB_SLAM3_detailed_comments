@@ -27,7 +27,7 @@ using namespace std;
 
 namespace ORB_SLAM3
 {
-
+    using namespace std;
 // 构造函数
 KeyFrameDatabase::KeyFrameDatabase(const ORBVocabulary &voc) : mpVoc(&voc)
 {

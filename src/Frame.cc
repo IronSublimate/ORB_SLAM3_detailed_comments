@@ -31,7 +31,7 @@
 #include <include/CameraModels/KannalaBrandt8.h>
 
 namespace ORB_SLAM3 {
-
+using namespace std;
 // 下一个生成的帧的ID,这里是初始化类的静态成员变量
     long unsigned int Frame::nNextId = 0;
 
