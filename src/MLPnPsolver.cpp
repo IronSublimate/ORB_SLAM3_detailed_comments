@@ -54,6 +54,7 @@
 
 namespace ORB_SLAM3
 {
+    using namespace std;
 /**
  * @brief MLPnP 构造函数
  *

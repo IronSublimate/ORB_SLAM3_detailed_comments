@@ -23,7 +23,7 @@
 
 namespace ORB_SLAM3
 {
-
+    using namespace std;
 long unsigned int MapPoint::nNextId=0;
 mutex MapPoint::mGlobalMutex;
 

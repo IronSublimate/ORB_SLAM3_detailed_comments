@@ -272,7 +272,7 @@ VertexSim3Expmap::VertexSim3Expmap() : BaseVertex<7, g2o::Sim3>()
 
 bool VertexSim3Expmap::read(std::istream &is)
 {
-    g2o::Vector7d cam2world;
+    g2o::Vector7 cam2world;
     for (int i = 0; i < 6; i++)
     {
         is >> cam2world[i];
@@ -299,7 +299,7 @@ bool VertexSim3Expmap::read(std::istream &is)
 bool VertexSim3Expmap::write(std::ostream &os) const
 {
     g2o::Sim3 cam2world(estimate().inverse());
-    g2o::Vector7d lv = cam2world.log();
+    g2o::Vector7 lv = cam2world.log();
     for (int i = 0; i < 7; i++)
     {
         os << lv[i] << " ";

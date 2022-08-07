@@ -26,11 +26,11 @@
 #include "KeyFrame.h"
 #include "ORBmatcher.h"
 
-#include "Thirdparty/DBoW2/DUtils/Random.h"
+#include <DUtils/Random.h>
 
 namespace ORB_SLAM3
 {
-
+using namespace std;
 
 Sim3Solver::Sim3Solver(KeyFrame *pKF1, KeyFrame *pKF2, const vector<MapPoint *> &vpMatched12, const bool bFixScale,
                        vector<KeyFrame*> vpKeyFrameMatchedMP):

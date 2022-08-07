@@ -25,6 +25,7 @@
 #include <cstdlib>
 
 #include "../../../include/Converter.h"
+#include <DUtils/DUtils.h>
 
 using namespace std;
 

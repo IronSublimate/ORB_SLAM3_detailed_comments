@@ -25,7 +25,7 @@
 namespace ORB_SLAM3
 {
 
-
+    using namespace std;
 MapDrawer::MapDrawer(Atlas* pAtlas, const string &strSettingPath, Settings* settings):mpAtlas(pAtlas)
 {
     if(settings){

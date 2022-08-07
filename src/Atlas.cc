@@ -25,7 +25,7 @@
 
 namespace ORB_SLAM3
 {
-
+using namespace std;
 Atlas::Atlas()
 {
     mpCurrentMap = static_cast<Map *>(NULL);

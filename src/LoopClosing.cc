@@ -31,7 +31,7 @@
 
 namespace ORB_SLAM3
 {
-
+using namespace std;
 /**
  * @brief 回环线程构造函数
  * @param pAtlas atlas
