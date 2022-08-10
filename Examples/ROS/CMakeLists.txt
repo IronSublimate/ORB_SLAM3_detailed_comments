@@ -3,11 +3,12 @@ cmake_minimum_required(VERSION 2.4.6)
 
 #rosbuild_init()
 
-IF (NOT ROS_BUILD_TYPE)
-    SET(ROS_BUILD_TYPE Release)
+IF (NOT CMAKE_BUILD_TYPE)
+    SET(CMAKE_BUILD_TYPE Release)
 ENDIF ()
 
 MESSAGE("Build type: " ${ROS_BUILD_TYPE})
+MESSAGE("Build type: " ${CMAKE_BUILD_TYPE})
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall -march=native ")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -march=native")
@@ -44,35 +45,40 @@ find_package(Eigen3 REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(g2o REQUIRED)
 find_package(OpenMP REQUIRED)
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg cv_bridge message_filters)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg cv_bridge message_filters cpp_common rosconsole rosconsole_bridge)
+find_package(Boost REQUIRED COMPONENTS system serialization)
 
 
 include_directories(
-        ${PROJECT_SOURCE_DIR}
-        ${PROJECT_SOURCE_DIR}/include
-        ${PROJECT_SOURCE_DIR}/include/CameraModels
-#        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/Sophus
+        ../..
+        ../../include
+        ../../include/CameraModels
+#        ${CMAKE_CURRENT_SOURCE_DIR}/../../../Thirdparty/Sophus
         ${Pangolin_INCLUDE_DIRS}
         ${Sophus_INCLUDE_DIRS}
         ${G2O_INCLUDE_DIRS}
         ${catkin_INCLUDE_DIRS}
+        ${Boost_INCLUDE_DIRS}
 )
 #message(hyx:${catkin_INCLUDE_DIRS})
-message(hyx:${PROJECT_SOURCE_DIR})
+#message(hyx:${PROJECT_SOURCE_DIR})
+message(hyx:${catkin_LIBRARIES})
+
 set(LIBS
         ${OpenCV_LIBS}
         ${EIGEN3_LIBS}
         ${Pangolin_LIBRARIES}
         ${catkin_LIBRARIES}
+
+        ${Boost_LIBRARIES}
 #        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/DBoW2/lib/libDBoW2.so
         DBoW2
 #        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/g2o/lib/libg2o.so
 #        ${PROJECT_SOURCE_DIR}/../../../lib/libORB_SLAM3.so
-        ORB_SLAM3
 #        ${DBoW2_LIBS}
         g2o_core g2o_stuff g2o_types_sba g2o_types_sim3 g2o_solver_csparse g2o_csparse_extension
         OpenMP::OpenMP_CXX
-        -lboost_system
+        ORB_SLAM3
         )
 
 # Node for monocular camera

@@ -4,11 +4,6 @@ project(ORB_SLAM3)
 set(CMAKE_CXX_STANDARD 14)
 add_definitions(-DCOMPILEDWITHC11)
 
-add_subdirectory(Thirdparty/DBoW2 ${CMAKE_CURRENT_BINARY_DIR}/DBoW2)
-#add_subdirectory(Thirdparty/g2o)
-#add_subdirectory(Thirdparty/Sophus)
-add_subdirectory(Examples/ROS/ORB_SLAM3_detailed_comments ${CMAKE_CURRENT_BINARY_DIR}/ROS_SLAM)
-
 IF (NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE Release)
 ENDIF ()
@@ -21,6 +16,11 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=native")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+
+add_subdirectory(Thirdparty/DBoW2 ${CMAKE_CURRENT_BINARY_DIR}/DBoW2)
+#add_subdirectory(Thirdparty/g2o)
+#add_subdirectory(Thirdparty/Sophus)
+add_subdirectory(Examples/ROS ${CMAKE_CURRENT_BINARY_DIR}/ROS)
 
 # Check C++11 or C++0x support
 #include(CheckCXXCompilerFlag)
@@ -56,16 +56,18 @@ find_package(Sophus REQUIRED)
 find_package(g2o REQUIRED)
 find_package(realsense2)
 find_package(fmt REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system serialization)
 
 include_directories(
         ${PROJECT_SOURCE_DIR}
         ${PROJECT_SOURCE_DIR}/include
         ${PROJECT_SOURCE_DIR}/include/CameraModels
         #${PROJECT_SOURCE_DIR}/Thirdparty/Sophus
-        ${EIGEN3_INCLUDE_DIR}
+        ${EIGEN3_INCLUDE_DIRS}
         ${Pangolin_INCLUDE_DIRS}
         ${Sophus_INCLUDE_DIRS}
         ${G2O_INCLUDE_DIRS}
+        ${Boost_INCLUDE_DIRS}
 )
 
 #set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
@@ -99,36 +101,6 @@ add_library(${PROJECT_NAME} SHARED
         src/TwoViewReconstruction.cc
         src/Config.cc
         src/Settings.cc
-        #include/System.h
-        #include/Tracking.h
-        #include/LocalMapping.h
-        #include/LoopClosing.h
-        #include/ORBextractor.h
-        #include/ORBmatcher.h
-        #include/FrameDrawer.h
-        #include/Converter.h
-        #include/MapPoint.h
-        #include/KeyFrame.h
-        #include/Atlas.h
-        #include/Map.h
-        #include/MapDrawer.h
-        #include/Optimizer.h
-        #include/Frame.h
-        #include/KeyFrameDatabase.h
-        #include/Sim3Solver.h
-        #include/Viewer.h
-        #include/ImuTypes.h
-        #include/G2oTypes.h
-        #include/CameraModels/GeometricCamera.h
-        #include/CameraModels/Pinhole.h
-        #include/CameraModels/KannalaBrandt8.h
-        #include/OptimizableTypes.h
-        #include/MLPnPsolver.h
-        #include/GeometricTools.h
-        #include/TwoViewReconstruction.h
-        #include/SerializationUtils.h
-        #include/Config.h
-        #include/Settings.h
         )
 
 #add_subdirectory(Thirdparty/g2o)
@@ -142,7 +114,7 @@ target_link_libraries(${PROJECT_NAME}
 #        ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
         ${Sophus_LIBRARIES}
 #        ${DBoW2_LIBS}
-        -lboost_serialization
+        ${Boost_LIBRARIES}
         -lcrypto
         g2o_core g2o_stuff g2o_types_sba g2o_types_sim3 g2o_solver_csparse g2o_csparse_extension
         fmt::fmt
