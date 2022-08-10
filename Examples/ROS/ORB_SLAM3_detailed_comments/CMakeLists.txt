@@ -3,9 +3,9 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 
 rosbuild_init()
 
-IF (NOT ROS_BUILD_TYPE)
-    SET(ROS_BUILD_TYPE Release)
-ENDIF ()
+#IF (NOT ROS_BUILD_TYPE)
+#    SET(ROS_BUILD_TYPE Release)
+#ENDIF ()
 
 MESSAGE("Build type: " ${ROS_BUILD_TYPE})
 
@@ -61,9 +61,11 @@ set(LIBS
         ${OpenCV_LIBS}
         ${EIGEN3_LIBS}
         ${Pangolin_LIBRARIES}
-        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/DBoW2/lib/libDBoW2.so
+#        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/DBoW2/lib/libDBoW2.so
+        DBoW2
 #        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/g2o/lib/libg2o.so
-        ${PROJECT_SOURCE_DIR}/../../../lib/libORB_SLAM3.so
+#        ${PROJECT_SOURCE_DIR}/../../../lib/libORB_SLAM3.so
+        ORB_SLAM3
 #        ${DBoW2_LIBS}
         g2o_core g2o_stuff g2o_types_sba g2o_types_sim3 g2o_solver_csparse g2o_csparse_extension
         OpenMP::OpenMP_CXX
