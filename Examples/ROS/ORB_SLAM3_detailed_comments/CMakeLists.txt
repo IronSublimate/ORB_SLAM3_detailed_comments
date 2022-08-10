@@ -9,8 +9,8 @@ ENDIF ()
 
 MESSAGE("Build type: " ${ROS_BUILD_TYPE})
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3 -march=native ")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall  -O3 -march=native")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall -march=native ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -march=native")
 
 # Check C++11 or C++0x support
 #include(CheckCXXCompilerFlag)
@@ -43,6 +43,7 @@ find_package(OpenCV 4 REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(g2o REQUIRED)
+find_package(OpenMP REQUIRED)
 
 
 include_directories(
@@ -65,6 +66,7 @@ set(LIBS
         ${PROJECT_SOURCE_DIR}/../../../lib/libORB_SLAM3.so
 #        ${DBoW2_LIBS}
         g2o_core g2o_stuff g2o_types_sba g2o_types_sim3 g2o_solver_csparse g2o_csparse_extension
+        OpenMP::OpenMP_CXX
         -lboost_system
         )
 
