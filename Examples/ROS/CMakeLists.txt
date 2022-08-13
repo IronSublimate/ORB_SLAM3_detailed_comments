@@ -62,7 +62,7 @@ include_directories(
 )
 #message(hyx:${catkin_INCLUDE_DIRS})
 #message(hyx:${PROJECT_SOURCE_DIR})
-message(hyx:${catkin_LIBRARIES})
+#message(hyx:${catkin_LIBRARIES})
 
 set(LIBS
         ${OpenCV_LIBS}
