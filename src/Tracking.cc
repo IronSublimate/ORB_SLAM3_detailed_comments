@@ -1672,7 +1672,7 @@ void Tracking::PrintTimeStats()
             if (!mpImuPreintegratedFromLastKF)
                 cout << "mpImuPreintegratedFromLastKF does not exist" << endl;
             mpImuPreintegratedFromLastKF->IntegrateNewMeasurement(acc, angVel, tstep);
-            cerr << acc << "\n" << angVel;
+//            cerr << acc << "\n" << angVel;
             pImuPreintegratedFromLastFrame->IntegrateNewMeasurement(acc, angVel, tstep);
         }
 
