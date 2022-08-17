@@ -45,7 +45,7 @@ find_package(Eigen3 REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(g2o REQUIRED)
 find_package(OpenMP REQUIRED)
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg cv_bridge message_filters cpp_common rosconsole rosconsole_bridge)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg cv_bridge message_filters cpp_common rosconsole rosconsole_bridge rosbag)
 find_package(Boost REQUIRED COMPONENTS system serialization)
 
 
@@ -134,5 +134,20 @@ add_executable(Stereo_Inertial
         )
 
 target_link_libraries(Stereo_Inertial
+        ${LIBS}
+        )
+add_executable(ros901_mono_inertial
+        src/ros901_mono_inertial.cc
+        )
+
+target_link_libraries(ros901_mono_inertial
+        ${LIBS}
+        )
+
+add_executable(bag901_mono_inertial
+        src/bag901_mono_inertial.cc
+        )
+
+target_link_libraries(bag901_mono_inertial
         ${LIBS}
         )
