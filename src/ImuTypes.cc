@@ -30,7 +30,7 @@ namespace IMU
 {
 
 const float eps = 1e-4;
-
+float GRAVITY_VALUE=9.81;
 /** 
  * @brief 强制让R变成一个正交矩阵
  * @param R 待优化的旋转矩阵
