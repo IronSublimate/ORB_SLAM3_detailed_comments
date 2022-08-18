@@ -20,25 +20,23 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
+#include <string>
+#include <thread>
+#include <opencv2/core/types.hpp>
+#include <Eigen/Core>
+#include <sophus/se3.hpp>
 
-#include <unistd.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<string>
-#include<thread>
-#include<opencv2/core/core.hpp>
-
-#include "Tracking.h"
-#include "FrameDrawer.h"
-#include "MapDrawer.h"
-#include "Atlas.h"
-#include "LocalMapping.h"
-#include "LoopClosing.h"
-#include "KeyFrameDatabase.h"
-#include "ORBVocabulary.h"
-#include "Viewer.h"
+//#include "Tracking.h"
+//#include "FrameDrawer.h"
+//#include "MapDrawer.h"
+//#include "Atlas.h"
+//#include "LocalMapping.h"
+//#include "LoopClosing.h"
+//#include "KeyFrameDatabase.h"
+//#include "ORBVocabulary.h"
+//#include "Viewer.h"
 #include "ImuTypes.h"
-#include "Settings.h"
+//#include "Settings.h"
 
 
 namespace ORB_SLAM3
@@ -79,6 +77,11 @@ class Tracking;
 class LocalMapping;
 class LoopClosing;
 class Settings;
+class Map;
+class MapPoint;
+class KeyFrameDatabase;
+class ORBVocabulary;
+
 
 class System
 {

@@ -26,8 +26,7 @@
 namespace ORB_SLAM3
 {
 
-typedef DBoW2::TemplatedVocabulary<DBoW2::FORB::TDescriptor, DBoW2::FORB>
-  ORBVocabulary;
+   class ORBVocabulary:public DBoW2::TemplatedVocabulary<DBoW2::FORB::TDescriptor, DBoW2::FORB>{};
 
 } //namespace ORB_SLAM
 

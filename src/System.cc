@@ -21,6 +21,10 @@
 #include "System.h"
 #include "Converter.h"
 #include <thread>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <pangolin/pangolin.h>
 #include <iomanip>
 #include <openssl/md5.h>
@@ -32,6 +36,18 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
+
+#include "Tracking.h"
+#include "FrameDrawer.h"
+#include "MapDrawer.h"
+#include "Atlas.h"
+#include "LocalMapping.h"
+#include "LoopClosing.h"
+#include "KeyFrameDatabase.h"
+#include "ORBVocabulary.h"
+#include "Viewer.h"
+#include "ImuTypes.h"
+#include "Settings.h"
 
 namespace ORB_SLAM3
 {
