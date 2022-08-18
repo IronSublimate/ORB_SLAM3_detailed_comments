@@ -22,9 +22,10 @@
 #include "Map.h"
 #include "MapPoint.h"
 #include "KeyFrame.h"
+#include "Frame.h"
 #include "GeometricCamera.h"
-#include "Pinhole.h"
-#include "KannalaBrandt8.h"
+//#include "Pinhole.h"
+//#include "KannalaBrandt8.h"
 
 #include <set>
 #include <mutex>

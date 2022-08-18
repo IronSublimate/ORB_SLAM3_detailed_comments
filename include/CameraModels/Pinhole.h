@@ -22,8 +22,10 @@
 #include <assert.h>
 
 #include "GeometricCamera.h"
-
 #include "TwoViewReconstruction.h"
+
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/base_object.hpp>
 
 namespace ORB_SLAM3 {
     class Pinhole : public GeometricCamera {

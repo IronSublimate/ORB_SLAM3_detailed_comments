@@ -23,16 +23,23 @@
 // Flag to activate the measurement of time in each process (track,localmap, place recognition).
 //#define REGISTER_TIMES
 
-#include "CameraModels/GeometricCamera.h"
+//#include "CameraModels/GeometricCamera.h"
 
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
+//#include <unistd.h>
+//#include <stdio.h>
+//#include <stdlib.h>
 #include <string>
+#include <iostream>
+
+#include <sophus/se3.hpp>
+#include <opencv2/core/types.hpp>
+#include <opencv2/core/mat.hpp>
+#include <opencv2/core/persistence.hpp>
 
 namespace ORB_SLAM3 {
 
     class System;
+    class GeometricCamera;
 
     //TODO: change to double instead of float
 

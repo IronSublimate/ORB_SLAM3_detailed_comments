@@ -20,14 +20,18 @@
 #ifndef LOCALMAPPING_H
 #define LOCALMAPPING_H
 
-#include "KeyFrame.h"
-#include "Atlas.h"
-#include "LoopClosing.h"
-#include "Tracking.h"
-#include "KeyFrameDatabase.h"
-#include "Settings.h"
+//#include "KeyFrame.h"
+//#include "Atlas.h"
+//#include "LoopClosing.h"
+//#include "Tracking.h"
+//#include "KeyFrameDatabase.h"
+//#include "Settings.h"
 
 #include <mutex>
+#include <list>
+#include <fstream>
+
+#include <Eigen/Core>
 
 
 namespace ORB_SLAM3
@@ -37,6 +41,9 @@ class System;
 class Tracking;
 class LoopClosing;
 class Atlas;
+class KeyFrame;
+class Map;
+class MapPoint;
 
 class LocalMapping
 {

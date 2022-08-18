@@ -19,6 +19,13 @@
 #include "KeyFrame.h"
 #include "Converter.h"
 #include "ImuTypes.h"
+#include "Frame.h"
+#include "MapPoint.h"
+#include "Map.h"
+#include "KeyFrameDatabase.h"
+#include "ORBVocabulary.h"
+#include "CameraModels/GeometricCamera.h"
+
 #include <mutex>
 
 namespace ORB_SLAM3

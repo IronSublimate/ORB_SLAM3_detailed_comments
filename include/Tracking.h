@@ -20,30 +20,47 @@
 #ifndef TRACKING_H
 #define TRACKING_H
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/features2d/features2d.hpp>
+//#include <opencv2/core/core.hpp>
+//#include <opencv2/features2d/features2d.hpp>
 
-#include "Viewer.h"
-#include "FrameDrawer.h"
-#include "Atlas.h"
-#include "LocalMapping.h"
-#include "LoopClosing.h"
-#include "Frame.h"
-#include "ORBVocabulary.h"
-#include "KeyFrameDatabase.h"
-#include "ORBextractor.h"
-#include "MapDrawer.h"
-#include "System.h"
-#include "ImuTypes.h"
-#include "Settings.h"
-
-#include "GeometricCamera.h"
+//#include "Viewer.h"
+//#include "FrameDrawer.h"
+//#include "Atlas.h"
+//#include "LocalMapping.h"
+//#include "LoopClosing.h"
+//#include "Frame.h"
+//#include "ORBVocabulary.h"
+//#include "KeyFrameDatabase.h"
+//#include "ORBextractor.h"
+//#include "MapDrawer.h"
+//#include "System.h"
+//#include "ImuTypes.h"
+//#include "Settings.h"
+//
+//#include "GeometricCamera.h"
 
 #include <mutex>
 #include <unordered_set>
+#include <list>
+#include <fstream>
+
+#include <Eigen/Core>
+#include <sophus/se3.hpp>
+#include <opencv2/core/mat.hpp>
+
+#include "ImuTypes.h"
+#include "Frame.h"
+
+namespace cv{
+    class FileStorage;
+}
 
 namespace ORB_SLAM3
 {
+namespace IMU{
+    class Bias;
+    class Point;
+}
 
 class Viewer;
 class FrameDrawer;
@@ -52,6 +69,15 @@ class LocalMapping;
 class LoopClosing;
 class System;
 class Settings;
+class ORBVocabulary;
+class MapDrawer;
+class KeyFrameDatabase;
+class KeyFrame;
+class Map;
+class MapPoint;
+class GeometricCamera;
+class ORBextractor;
+
 
 class Tracking
 {  

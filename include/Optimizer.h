@@ -20,29 +20,41 @@
 #ifndef OPTIMIZER_H
 #define OPTIMIZER_H
 
-#include "Map.h"
-#include "MapPoint.h"
-#include "KeyFrame.h"
-#include "LoopClosing.h"
-#include "Frame.h"
-
-#include <math.h>
-
+//#include "Map.h"
+//#include "MapPoint.h"
+//#include "KeyFrame.h"
+//#include "LoopClosing.h"
+//#include "Frame.h"
+//
+//#include <math.h>
+//
 #include <g2o/types/sim3/types_seven_dof_expmap.h>
-#include <g2o/core/sparse_block_matrix.h>
-#include <g2o/core/block_solver.h>
-#include <g2o/core/optimization_algorithm_levenberg.h>
-#include <g2o/core/optimization_algorithm_gauss_newton.h>
-#include <g2o/solvers/eigen/linear_solver_eigen.h>
-#include <g2o/types/sba/types_six_dof_expmap.h>
-#include <g2o/core/robust_kernel_impl.h>
-#include <g2o/solvers/dense/linear_solver_dense.h>
+//#include <g2o/core/sparse_block_matrix.h>
+//#include <g2o/core/block_solver.h>
+//#include <g2o/core/optimization_algorithm_levenberg.h>
+//#include <g2o/core/optimization_algorithm_gauss_newton.h>
+//#include <g2o/solvers/eigen/linear_solver_eigen.h>
+//#include <g2o/types/sba/types_six_dof_expmap.h>
+//#include <g2o/core/robust_kernel_impl.h>
+//#include <g2o/solvers/dense/linear_solver_dense.h>
+
+#include <vector>
+#include <map>
+#include <Eigen/Core>
+
+//#include "LoopClosing.h"
 
 namespace ORB_SLAM3
 {
 
 class LoopClosing;
-
+class KeyFrame;
+class MapPoint;
+class Map;
+class Frame;
+    typedef std::map<KeyFrame *, g2o::Sim3, std::less<KeyFrame *>,
+            Eigen::aligned_allocator < std::pair<KeyFrame *const, g2o::Sim3> > >
+            KeyFrameAndPose;
 class Optimizer
 {
 public:
@@ -62,8 +74,8 @@ public:
 
     // if bFixScale is true, 6DoF optimization (stereo,rgbd), 7DoF otherwise (mono)
     void static OptimizeEssentialGraph(Map* pMap, KeyFrame* pLoopKF, KeyFrame* pCurKF,
-                                       const LoopClosing::KeyFrameAndPose &NonCorrectedSim3,
-                                       const LoopClosing::KeyFrameAndPose &CorrectedSim3,
+                                       const KeyFrameAndPose &NonCorrectedSim3,
+                                       const KeyFrameAndPose &CorrectedSim3,
                                        const std::map<KeyFrame *, std::set<KeyFrame *> > &LoopConnections,
                                        const bool &bFixScale);
     void static OptimizeEssentialGraph(KeyFrame* pCurKF, std::vector<KeyFrame*> &vpFixedKFs, std::vector<KeyFrame*> &vpFixedCorrectedKFs,
@@ -71,8 +83,8 @@ public:
 
     // For inertial loopclosing
     void static OptimizeEssentialGraph4DoF(Map* pMap, KeyFrame* pLoopKF, KeyFrame* pCurKF,
-                                       const LoopClosing::KeyFrameAndPose &NonCorrectedSim3,
-                                       const LoopClosing::KeyFrameAndPose &CorrectedSim3,
+                                       const KeyFrameAndPose &NonCorrectedSim3,
+                                       const KeyFrameAndPose &CorrectedSim3,
                                        const std::map<KeyFrame *, std::set<KeyFrame *> > &LoopConnections);
 
 
@@ -84,7 +96,7 @@ public:
     // For inertial systems
 
     void static LocalInertialBA(KeyFrame* pKF, bool *pbStopFlag, Map *pMap, int& num_fixedKF, int& num_OptKF, int& num_MPs, int& num_edges, bool bLarge = false, bool bRecInit = false);
-    void static MergeInertialBA(KeyFrame* pCurrKF, KeyFrame* pMergeKF, bool *pbStopFlag, Map *pMap, LoopClosing::KeyFrameAndPose &corrPoses);
+    void static MergeInertialBA(KeyFrame* pCurrKF, KeyFrame* pMergeKF, bool *pbStopFlag, Map *pMap, KeyFrameAndPose &corrPoses);
 
     // Local BA in welding area when two maps are merged
     void static LocalBundleAdjustment(KeyFrame* pMainKF,std::vector<KeyFrame*> vpAdjustKF, std::vector<KeyFrame*> vpFixedKF, bool *pbStopFlag);

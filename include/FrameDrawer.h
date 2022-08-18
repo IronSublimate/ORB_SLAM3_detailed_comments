@@ -20,22 +20,30 @@
 #ifndef FRAMEDRAWER_H
 #define FRAMEDRAWER_H
 
-#include "Tracking.h"
-#include "MapPoint.h"
-#include "Atlas.h"
+//#include "Tracking.h"
+//#include "MapPoint.h"
+//#include "Atlas.h"
+//
+//#include<opencv2/core/core.hpp>
+//#include<opencv2/features2d/features2d.hpp>
 
-#include<opencv2/core/core.hpp>
-#include<opencv2/features2d/features2d.hpp>
-
-#include<mutex>
+#include <mutex>
+#include <map>
 #include <unordered_set>
 
+#include <opencv2/core/mat.hpp>
+#include <Eigen/Core>
+
+#include "Frame.h"
 
 namespace ORB_SLAM3
 {
 
 class Tracking;
 class Viewer;
+class Atlas;
+class MapPoint;
+
 
 class FrameDrawer
 {

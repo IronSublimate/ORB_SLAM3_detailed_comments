@@ -25,20 +25,23 @@
 #include <g2o/core/base_multi_edge.h>
 #include <g2o/core/base_unary_edge.h>
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/core/mat.hpp>
 
 #include <Eigen/Core>
-#include <Eigen/Geometry>
-#include <Eigen/Dense>
+//#include <Eigen/Geometry>
+//#include <Eigen/Dense>
 
-#include <Frame.h>
-#include <KeyFrame.h>
-
-#include "Converter.h"
-#include <math.h>
+//#include <Frame.h>
+//#include <KeyFrame.h>
+//
+//#include "Converter.h"
+//#include <math.h>
 
 namespace ORB_SLAM3
 {
+    namespace IMU{
+        class Preintegrated;
+    }
 
 class KeyFrame;
 class Frame;

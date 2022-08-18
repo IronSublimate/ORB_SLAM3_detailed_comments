@@ -37,6 +37,8 @@
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
 
+#include <opencv2/imgproc/imgproc.hpp>
+
 #include "Tracking.h"
 #include "FrameDrawer.h"
 #include "MapDrawer.h"
@@ -48,6 +50,9 @@
 #include "Viewer.h"
 #include "ImuTypes.h"
 #include "Settings.h"
+#include "utils.h"
+#include "CameraModels/Pinhole.h"
+#include "CameraModels/KannalaBrandt8.h"
 
 namespace ORB_SLAM3
 {

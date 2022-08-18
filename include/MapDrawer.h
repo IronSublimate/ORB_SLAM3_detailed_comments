@@ -20,18 +20,31 @@
 #ifndef MAPDRAWER_H
 #define MAPDRAWER_H
 
-#include"Atlas.h"
-#include"MapPoint.h"
-#include"KeyFrame.h"
-#include "Settings.h"
-#include<pangolin/pangolin.h>
+//#include"Atlas.h"
+//#include"MapPoint.h"
+//#include"KeyFrame.h"
+//#include "Settings.h"
+//#include<pangolin/pangolin.h>
 
 #include<mutex>
+
+#include <Eigen/Core>
+#include <sophus/se3.hpp>
+
+namespace cv{
+    class FileStorage;
+}
+
+namespace pangolin{
+    class OpenGlMatrix;
+}
 
 namespace ORB_SLAM3
 {
 
 class Settings;
+class Atlas;
+class KeyFrame;
 
 class MapDrawer
 {

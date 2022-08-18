@@ -22,9 +22,11 @@
 #include "CameraModels/KannalaBrandt8.h"
 
 #include "System.h"
+#include "Converter.h"
 
 #include <opencv2/core/persistence.hpp>
 #include <opencv2/core/eigen.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
 
 #include <iostream>
 

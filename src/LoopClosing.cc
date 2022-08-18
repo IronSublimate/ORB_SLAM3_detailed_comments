@@ -24,9 +24,17 @@
 #include "Optimizer.h"
 #include "ORBmatcher.h"
 #include "G2oTypes.h"
+#include "Tracking.h"
+#include "LocalMapping.h"
+#include "System.h"
+#include "utils.h"
+#include "KeyFrame.h"
+#include "KeyFrame.h"
+#include "KeyFrameDatabase.h"
+#include "Atlas.h"
 
-#include<mutex>
-#include<thread>
+#include <mutex>
+#include <thread>
 
 
 namespace ORB_SLAM3

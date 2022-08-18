@@ -25,19 +25,21 @@
 #include "Thirdparty/DBoW2/DBoW2/BowVector.h"
 #include "Thirdparty/DBoW2/DBoW2/FeatureVector.h"
 
-#include <sophus/geometry.hpp>
+//#include <sophus/geometry.hpp>
 
 #include "ImuTypes.h"
-#include "ORBVocabulary.h"
-
-#include "Converter.h"
-#include "Settings.h"
+//#include "ORBVocabulary.h"
+//
+//#include "Converter.h"
+//#include "Settings.h"
 
 #include <mutex>
-#include <opencv2/opencv.hpp>
+#include <map>
+#include <opencv2/core/mat.hpp>
+#include <opencv2/features2d.hpp>
 
-#include "Eigen/Core"
-#include "sophus/se3.hpp"
+#include <Eigen/Core>
+#include <sophus/se3.hpp>
 
 namespace ORB_SLAM3
 {
@@ -49,6 +51,7 @@ class KeyFrame;
 class ConstraintPoseImu;
 class GeometricCamera;
 class ORBextractor;
+class ORBVocabulary;
 
 class Frame
 {

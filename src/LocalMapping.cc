@@ -19,10 +19,17 @@
 
 #include "LocalMapping.h"
 #include "LoopClosing.h"
+#include "Tracking.h"
 #include "ORBmatcher.h"
 #include "Optimizer.h"
 #include "Converter.h"
 #include "GeometricTools.h"
+#include "utils.h"
+#include "Map.h"
+#include "MapPoint.h"
+#include "KeyFrame.h"
+#include "CameraModels/GeometricCamera.h"
+#include "Atlas.h"
 
 #include<mutex>
 #include<chrono>

@@ -19,6 +19,11 @@
 #include "G2oTypes.h"
 #include "ImuTypes.h"
 #include "Converter.h"
+#include "KeyFrame.h"
+#include "Frame.h"
+#include "CameraModels/GeometricCamera.h"
+
+
 namespace ORB_SLAM3
 {
 
