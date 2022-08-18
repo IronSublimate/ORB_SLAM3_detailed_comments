@@ -36,6 +36,12 @@
 #include <g2o/solvers/dense/linear_solver_dense.h>
 #include "G2oTypes.h"
 #include "Converter.h"
+#include "utils.h"
+#include "Map.h"
+#include "MapPoint.h"
+#include "KeyFrame.h"
+#include "Frame.h"
+#include "LoopClosing.h"
 
 #include <mutex>
 
@@ -1513,8 +1519,8 @@ void Optimizer::LocalBundleAdjustment(KeyFrame *pKF, bool* pbStopFlag, Map* pMap
 
 // 在LoopClosing中优化
 void Optimizer::OptimizeEssentialGraph(Map* pMap, KeyFrame* pLoopKF, KeyFrame* pCurKF,
-                                       const LoopClosing::KeyFrameAndPose &NonCorrectedSim3,
-                                       const LoopClosing::KeyFrameAndPose &CorrectedSim3,
+                                       const KeyFrameAndPose &NonCorrectedSim3,
+                                       const KeyFrameAndPose &CorrectedSim3,
                                        const map<KeyFrame *, set<KeyFrame *> > &LoopConnections, const bool &bFixScale)
 {   
     // Setup optimizer
@@ -1553,7 +1559,7 @@ void Optimizer::OptimizeEssentialGraph(Map* pMap, KeyFrame* pLoopKF, KeyFrame* p
 
         const int nIDi = pKF->mnId;
 
-        LoopClosing::KeyFrameAndPose::const_iterator it = CorrectedSim3.find(pKF);
+        KeyFrameAndPose::const_iterator it = CorrectedSim3.find(pKF);
 
         if(it!=CorrectedSim3.end())
         {
@@ -1627,7 +1633,7 @@ void Optimizer::OptimizeEssentialGraph(Map* pMap, KeyFrame* pLoopKF, KeyFrame* p
 
         g2o::Sim3 Swi;
 
-        LoopClosing::KeyFrameAndPose::const_iterator iti = NonCorrectedSim3.find(pKF);
+        KeyFrameAndPose::const_iterator iti = NonCorrectedSim3.find(pKF);
 
         if(iti!=NonCorrectedSim3.end())
             Swi = (iti->second).inverse();
@@ -1643,7 +1649,7 @@ void Optimizer::OptimizeEssentialGraph(Map* pMap, KeyFrame* pLoopKF, KeyFrame* p
 
             g2o::Sim3 Sjw;
 
-            LoopClosing::KeyFrameAndPose::const_iterator itj = NonCorrectedSim3.find(pParentKF);
+            KeyFrameAndPose::const_iterator itj = NonCorrectedSim3.find(pParentKF);
 
             if(itj!=NonCorrectedSim3.end())
                 Sjw = itj->second;
@@ -1669,7 +1675,7 @@ void Optimizer::OptimizeEssentialGraph(Map* pMap, KeyFrame* pLoopKF, KeyFrame* p
             {
                 g2o::Sim3 Slw;
 
-                LoopClosing::KeyFrameAndPose::const_iterator itl = NonCorrectedSim3.find(pLKF);
+                KeyFrameAndPose::const_iterator itl = NonCorrectedSim3.find(pLKF);
 
                 if(itl!=NonCorrectedSim3.end())
                     Slw = itl->second;
@@ -1700,7 +1706,7 @@ void Optimizer::OptimizeEssentialGraph(Map* pMap, KeyFrame* pLoopKF, KeyFrame* p
 
                     g2o::Sim3 Snw;
 
-                    LoopClosing::KeyFrameAndPose::const_iterator itn = NonCorrectedSim3.find(pKFn);
+                    KeyFrameAndPose::const_iterator itn = NonCorrectedSim3.find(pKFn);
 
                     if(itn!=NonCorrectedSim3.end())
                         Snw = itn->second;
@@ -1723,7 +1729,7 @@ void Optimizer::OptimizeEssentialGraph(Map* pMap, KeyFrame* pLoopKF, KeyFrame* p
         if(pKF->bImu && pKF->mPrevKF)
         {
             g2o::Sim3 Spw;
-            LoopClosing::KeyFrameAndPose::const_iterator itp = NonCorrectedSim3.find(pKF->mPrevKF);
+            KeyFrameAndPose::const_iterator itp = NonCorrectedSim3.find(pKF->mPrevKF);
             if(itp!=NonCorrectedSim3.end())
                 Spw = itp->second;
             else
@@ -3966,7 +3972,7 @@ void Optimizer::LocalBundleAdjustment(KeyFrame* pMainKF,vector<KeyFrame*> vpAdju
 }
 
 //LoopClosing中的MergeLocal在有IMU的时候，和上面那个互补 运行的 welding BA , 优化所有的当前关键帧共视窗口里的关键帧和地图点, 固定所有融合帧共视窗口里的帧
-void Optimizer::MergeInertialBA(KeyFrame* pCurrKF, KeyFrame* pMergeKF, bool *pbStopFlag, Map *pMap, LoopClosing::KeyFrameAndPose &corrPoses)
+void Optimizer::MergeInertialBA(KeyFrame* pCurrKF, KeyFrame* pMergeKF, bool *pbStopFlag, Map *pMap, KeyFrameAndPose &corrPoses)
 {
     const int Nd = 6;
     const unsigned long maxKFid = pCurrKF->mnId;
@@ -5319,8 +5325,8 @@ int Optimizer::PoseInertialOptimizationLastFrame(Frame *pFrame, bool bRecInit)
 
 // LoopClosing中，在有IMU的情况下，和上面的那个OptimizeEssentialGraph互补
 void Optimizer::OptimizeEssentialGraph4DoF(Map* pMap, KeyFrame* pLoopKF, KeyFrame* pCurKF,
-                                       const LoopClosing::KeyFrameAndPose &NonCorrectedSim3,
-                                       const LoopClosing::KeyFrameAndPose &CorrectedSim3,
+                                       const KeyFrameAndPose &NonCorrectedSim3,
+                                       const KeyFrameAndPose &CorrectedSim3,
                                        const map<KeyFrame *, set<KeyFrame *> > &LoopConnections)
 {
 //    typedef g2o::BlockSolver< g2o::BlockSolverTraits<4, 4> > BlockSolver_4_4;
@@ -5358,7 +5364,7 @@ void Optimizer::OptimizeEssentialGraph4DoF(Map* pMap, KeyFrame* pLoopKF, KeyFram
 
         const int nIDi = pKF->mnId;
 
-        LoopClosing::KeyFrameAndPose::const_iterator it = CorrectedSim3.find(pKF);
+        KeyFrameAndPose::const_iterator it = CorrectedSim3.find(pKF);
 
         if(it!=CorrectedSim3.end())
         {
@@ -5438,7 +5444,7 @@ void Optimizer::OptimizeEssentialGraph4DoF(Map* pMap, KeyFrame* pLoopKF, KeyFram
         g2o::Sim3 Siw;
 
         // Use noncorrected poses for posegraph edges
-        LoopClosing::KeyFrameAndPose::const_iterator iti = NonCorrectedSim3.find(pKF);
+        KeyFrameAndPose::const_iterator iti = NonCorrectedSim3.find(pKF);
 
         if(iti!=NonCorrectedSim3.end())
             Siw = iti->second;
@@ -5453,7 +5459,7 @@ void Optimizer::OptimizeEssentialGraph4DoF(Map* pMap, KeyFrame* pLoopKF, KeyFram
 
             g2o::Sim3 Swj;
 
-            LoopClosing::KeyFrameAndPose::const_iterator itj = NonCorrectedSim3.find(pParentKF);
+            KeyFrameAndPose::const_iterator itj = NonCorrectedSim3.find(pParentKF);
 
             if(itj!=NonCorrectedSim3.end())
                 Swj = (itj->second).inverse();
@@ -5481,7 +5487,7 @@ void Optimizer::OptimizeEssentialGraph4DoF(Map* pMap, KeyFrame* pLoopKF, KeyFram
 
             g2o::Sim3 Swj;
 
-            LoopClosing::KeyFrameAndPose::const_iterator itj = NonCorrectedSim3.find(prevKF);
+            KeyFrameAndPose::const_iterator itj = NonCorrectedSim3.find(prevKF);
 
             if(itj!=NonCorrectedSim3.end())
                 Swj = (itj->second).inverse();
@@ -5510,7 +5516,7 @@ void Optimizer::OptimizeEssentialGraph4DoF(Map* pMap, KeyFrame* pLoopKF, KeyFram
             {
                 g2o::Sim3 Swl;
 
-                LoopClosing::KeyFrameAndPose::const_iterator itl = NonCorrectedSim3.find(pLKF);
+                KeyFrameAndPose::const_iterator itl = NonCorrectedSim3.find(pLKF);
 
                 if(itl!=NonCorrectedSim3.end())
                     Swl = itl->second.inverse();
@@ -5545,7 +5551,7 @@ void Optimizer::OptimizeEssentialGraph4DoF(Map* pMap, KeyFrame* pLoopKF, KeyFram
 
                     g2o::Sim3 Swn;
 
-                    LoopClosing::KeyFrameAndPose::const_iterator itn = NonCorrectedSim3.find(pKFn);
+                    KeyFrameAndPose::const_iterator itn = NonCorrectedSim3.find(pKFn);
 
                     if(itn!=NonCorrectedSim3.end())
                         Swn = itn->second.inverse();

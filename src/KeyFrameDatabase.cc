@@ -19,6 +19,9 @@
 #include "KeyFrameDatabase.h"
 
 #include "KeyFrame.h"
+#include "Frame.h"
+#include "ORBVocabulary.h"
+#include "Map.h"
 #include "Thirdparty/DBoW2/DBoW2/BowVector.h"
 
 #include <mutex>

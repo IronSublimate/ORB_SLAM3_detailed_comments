@@ -19,6 +19,12 @@
 #include "Map.h"
 
 #include <mutex>
+#include <pangolin/pangolin.h>
+
+#include "KeyFrame.h"
+#include "MapPoint.h"
+#include "KeyFrameDatabase.h"
+
 
 namespace ORB_SLAM3
 {

@@ -17,12 +17,16 @@
 */
 
 #include "FrameDrawer.h"
-#include "Tracking.h"
+#include <mutex>
 
 #include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+//#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
-#include<mutex>
+
+#include "Tracking.h"
+#include "MapPoint.h"
+#include "Atlas.h"
 
 namespace ORB_SLAM3
 {

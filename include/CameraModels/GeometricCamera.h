@@ -22,22 +22,27 @@
 #include <vector>
 
 #include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/features2d/features2d.hpp>
+//#include <opencv2/imgproc/imgproc.hpp>
+//#include <opencv2/features2d/features2d.hpp>
 
-#include <boost/serialization/serialization.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/base_object.hpp>
-#include <boost/serialization/export.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/serialization/assume_abstract.hpp>
+//#include <boost/serialization/serialization.hpp>
+//#include <boost/serialization/access.hpp>
+//#include <boost/serialization/base_object.hpp>
+//#include <boost/serialization/export.hpp>
+//#include <boost/serialization/vector.hpp>
+//#include <boost/serialization/assume_abstract.hpp>
 
 #include <sophus/se3.hpp>
 
 #include <Eigen/Geometry>
 
-#include "Converter.h"
-#include "GeometricTools.h"
+//#include "Converter.h"
+//#include "GeometricTools.h"
+namespace boost{
+    namespace serialization{
+        class access;
+    }
+}
 
 namespace ORB_SLAM3 {
     class GeometricCamera {

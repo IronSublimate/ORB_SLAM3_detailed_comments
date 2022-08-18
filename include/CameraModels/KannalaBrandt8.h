@@ -22,9 +22,17 @@
 
 #include <assert.h>
 
+
 #include "GeometricCamera.h"
 
 #include "TwoViewReconstruction.h"
+
+//#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/base_object.hpp>
+//#include <boost/serialization/export.hpp>
+//#include <boost/serialization/vector.hpp>
+//#include <boost/serialization/assume_abstract.hpp>
 
 namespace ORB_SLAM3 {
     class KannalaBrandt8 : public GeometricCamera {

@@ -25,10 +25,13 @@
 #include "Converter.h"
 #include "ORBmatcher.h"
 #include "GeometricCamera.h"
+#include "ORBVocabulary.h"
+
+#include <CameraModels/Pinhole.h>
+#include <CameraModels/KannalaBrandt8.h>
 
 #include <thread>
-#include <include/CameraModels/Pinhole.h>
-#include <include/CameraModels/KannalaBrandt8.h>
+#include <opencv2/calib3d/calib3d.hpp>
 
 namespace ORB_SLAM3 {
 using namespace std;

@@ -23,17 +23,20 @@
 #include <vector>
 #include <list>
 #include <set>
+#include <map>
+#include <mutex>
 
-#include "KeyFrame.h"
-#include "Frame.h"
-#include "ORBVocabulary.h"
-#include "Map.h"
+//#include "KeyFrame.h"
+//#include "Frame.h"
+//#include "ORBVocabulary.h"
+//#include "Map.h"
 
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/list.hpp>
 
-#include<mutex>
+#include <Eigen/Core>
+#include <sophus/se3.hpp>
 
 
 namespace ORB_SLAM3
@@ -42,6 +45,7 @@ namespace ORB_SLAM3
 class KeyFrame;
 class Frame;
 class Map;
+class ORBVocabulary;
 
 
 class KeyFrameDatabase

@@ -19,12 +19,25 @@
 
 #include "Viewer.h"
 #include <pangolin/pangolin.h>
+#include <opencv2/core/persistence.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui.hpp>
 
 #include <mutex>
+#include <string>
+#include <iostream>
+
+#include "Settings.h"
+#include "Tracking.h"
+#include "System.h"
+#include "MapDrawer.h"
+#include "FrameDrawer.h"
+#include "Atlas.h"
+
 
 namespace ORB_SLAM3
 {
-
+using namespace std;
 Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer, Tracking *pTracking, const string &strSettingPath, Settings* settings):
     both(false), mpSystem(pSystem), mpFrameDrawer(pFrameDrawer),mpMapDrawer(pMapDrawer), mpTracker(pTracking),
     mbFinishRequested(false), mbFinished(true), mbStopped(true), mbStopRequested(false)
@@ -218,7 +231,7 @@ void Viewer::Run()
 
     float trackedImageScale = mpTracker->GetImageScale();
 
-    cout << "Starting the Viewer" << endl;
+    std::cout << "Starting the Viewer" << std::endl;
     while(1)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

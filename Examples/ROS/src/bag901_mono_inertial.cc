@@ -16,22 +16,15 @@
 * If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include<iostream>
-#include<algorithm>
-#include<fstream>
-#include<chrono>
-#include<vector>
-#include<queue>
-#include<thread>
-#include<mutex>
+#include <iostream>
+#include <vector>
+#include <mutex>
 
-#include<ros/ros.h>
+#include <ros/ros.h>
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
-#include<cv_bridge/cv_bridge.h>
-#include<sensor_msgs/Imu.h>
-
-#include<opencv2/core/core.hpp>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/Imu.h>
 
 #include "System.h"
 #include "ImuTypes.h"
@@ -85,7 +78,7 @@ int main(int argc, char **argv) {
 
         }
     }
-
+    SLAM.Shutdown();
     return 0;
 }
 

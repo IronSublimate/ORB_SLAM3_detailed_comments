@@ -20,6 +20,7 @@
 #include "Tracking.h"
 
 #include "ORBmatcher.h"
+#include "ORBextractor.h"
 #include "FrameDrawer.h"
 #include "Converter.h"
 #include "G2oTypes.h"
@@ -28,12 +29,25 @@
 #include "KannalaBrandt8.h"
 #include "MLPnPsolver.h"
 #include "GeometricTools.h"
+#include "System.h"
+#include "Map.h"
+#include "MapPoint.h"
+#include "Settings.h"
+#include "utils.h"
+#include "MapDrawer.h"
+#include "Viewer.h"
+#include "Frame.h"
+#include "KeyFrame.h"
+#include "KeyFrameDatabase.h"
+#include "LoopClosing.h"
+#include "LocalMapping.h"
+#include "Atlas.h"
 
 #include <iostream>
-
 #include <mutex>
 #include <chrono>
 
+#include <opencv2/imgproc/imgproc.hpp>
 
 using namespace std;
 

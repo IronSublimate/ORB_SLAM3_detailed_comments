@@ -20,15 +20,20 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "MapPoint.h"
-#include "KeyFrame.h"
+//#include "MapPoint.h"
+//#include "KeyFrame.h"
 
 #include <set>
-#include <pangolin/pangolin.h>
+#include <map>
+#include <list>
+#include <vector>
+//#include <pangolin/pangolin.h>
 #include <mutex>
 
 #include <boost/serialization/base_object.hpp>
 
+#include <Eigen/Core>
+#include <sophus/se3.hpp>
 
 namespace ORB_SLAM3
 {
@@ -37,6 +42,9 @@ class MapPoint;
 class KeyFrame;
 class Atlas;
 class KeyFrameDatabase;
+class GeometricCamera;
+class ORBVocabulary;
+class GLubyte;
 
 class Map
 {

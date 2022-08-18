@@ -20,15 +20,20 @@
 #ifndef MAPPOINT_H
 #define MAPPOINT_H
 
-#include "KeyFrame.h"
-#include "Frame.h"
-#include "Map.h"
-#include "Converter.h"
+//#include "KeyFrame.h"
+//#include "Frame.h"
+//#include "Map.h"
+//#include "Converter.h"
 
-#include "SerializationUtils.h"
+//#include "SerializationUtils.h"
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/core/mat.hpp>
 #include <mutex>
+#include <set>
+#include <map>
+
+#include <Eigen/Core>
+//#include <sophus/se3.hpp>
 
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/array.hpp>

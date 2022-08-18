@@ -25,6 +25,9 @@
 
 #include "KeyFrame.h"
 #include "ORBmatcher.h"
+#include "MapPoint.h"
+#include "Converter.h"
+#include "CameraModels/GeometricCamera.h"
 
 #include <DUtils/Random.h>
 

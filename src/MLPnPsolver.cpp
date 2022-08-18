@@ -49,6 +49,13 @@
 
 #include <Eigen/Sparse>
 
+#include "MapPoint.h"
+#include "Frame.h"
+#include "CameraModels/GeometricCamera.h"
+#include "Converter.h"
+#include "Thirdparty/DBoW2/DUtils/Random.h"
+
+
 // MLPnP算法，极大似然PnP算法，解决PnP问题，用在重定位中，不用运动的先验知识来估计相机位姿
 // 基于论文《MLPNP - A REAL-TIME MAXIMUM LIKELIHOOD SOLUTION TO THE PERSPECTIVE-N-POINT PROBLEM》
 

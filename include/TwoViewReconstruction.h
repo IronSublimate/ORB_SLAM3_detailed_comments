@@ -19,7 +19,7 @@
 #ifndef TwoViewReconstruction_H
 #define TwoViewReconstruction_H
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/mat.hpp>
 #include <Eigen/Core>
 #include <unordered_set>
 

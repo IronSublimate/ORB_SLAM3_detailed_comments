@@ -22,8 +22,8 @@
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
 
-#include <sophus/se3.hpp>
-#include <Eigen/Core>
+//#include <sophus/se3.hpp>
+//#include <Eigen/Core>
 
 #include <opencv2/core/types.hpp>
 //#include <opencv2/features2d/features2d.hpp>

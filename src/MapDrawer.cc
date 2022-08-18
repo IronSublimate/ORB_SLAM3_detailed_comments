@@ -19,6 +19,9 @@
 #include "MapDrawer.h"
 #include "MapPoint.h"
 #include "KeyFrame.h"
+#include "Settings.h"
+#include "Atlas.h"
+#include "Map.h"
 #include <pangolin/pangolin.h>
 #include <mutex>
 

@@ -20,13 +20,18 @@
 #ifndef VIEWER_H
 #define VIEWER_H
 
-#include "FrameDrawer.h"
-#include "MapDrawer.h"
-#include "Tracking.h"
-#include "System.h"
-#include "Settings.h"
+//#include "FrameDrawer.h"
+//#include "MapDrawer.h"
+//#include "Tracking.h"
+//#include "System.h"
+//#include "Settings.h"
 
 #include <mutex>
+#include <Eigen/Core>
+
+namespace cv{
+    class FileStorage;
+}
 
 namespace ORB_SLAM3
 {

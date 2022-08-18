@@ -20,15 +20,18 @@
 #ifndef SIM3SOLVER_H
 #define SIM3SOLVER_H
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/mat.hpp>
 #include <vector>
 
-#include "KeyFrame.h"
-
+//#include "KeyFrame.h"
+#include <Eigen/Core>
 
 
 namespace ORB_SLAM3
 {
+class KeyFrame;
+class MapPoint;
+class GeometricCamera;
 
 class Sim3Solver
 {
