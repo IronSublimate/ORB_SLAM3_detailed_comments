@@ -19,6 +19,7 @@
 #include "ViewerAR.h"
 
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 #include <mutex>
 #include <thread>
@@ -26,6 +27,8 @@
 
 #include <Converter.h>
 #include <DUtils/DUtils.h>
+
+#include "MapPoint.h"
 
 using namespace std;
 
