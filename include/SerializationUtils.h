@@ -19,16 +19,13 @@
 #ifndef SERIALIZATION_UTILS_H
 #define SERIALIZATION_UTILS_H
 
+#include <vector>
+
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
 
-//#include <sophus/se3.hpp>
-//#include <Eigen/Core>
-
 #include <opencv2/core/types.hpp>
-//#include <opencv2/features2d/features2d.hpp>
 
-#include <vector>
 
 namespace ORB_SLAM3
 {

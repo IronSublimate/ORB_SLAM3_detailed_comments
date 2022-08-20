@@ -34,7 +34,7 @@
 #include <opencv2/core/mat.hpp>
 #include <Eigen/Core>
 
-#include "Frame.h"
+//#include "Frame.h"
 
 namespace ORB_SLAM3
 {
@@ -43,6 +43,7 @@ class Tracking;
 class Viewer;
 class Atlas;
 class MapPoint;
+class Frame;
 
 
 class FrameDrawer
@@ -82,7 +83,7 @@ protected:
     std::mutex mMutex;
     std::vector<std::pair<cv::Point2f, cv::Point2f> > mvTracks;
 
-    Frame mCurrentFrame;
+    Frame* mpCurrentFrame;
     std::vector<MapPoint*> mvpLocalMap;
     std::vector<cv::KeyPoint> mvMatchedKeys;
     std::vector<MapPoint*> mvpMatchedMPs;

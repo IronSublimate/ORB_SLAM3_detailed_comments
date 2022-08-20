@@ -25,14 +25,6 @@
 #include "Thirdparty/DBoW2/DBoW2/BowVector.h"
 #include "Thirdparty/DBoW2/DBoW2/FeatureVector.h"
 
-//#include <sophus/geometry.hpp>
-
-#include "ImuTypes.h"
-//#include "ORBVocabulary.h"
-//
-//#include "Converter.h"
-//#include "Settings.h"
-
 #include <mutex>
 #include <map>
 #include <opencv2/core/mat.hpp>
@@ -40,6 +32,8 @@
 
 #include <Eigen/Core>
 #include <sophus/se3.hpp>
+
+#include "ImuTypes.h"
 
 namespace ORB_SLAM3
 {
