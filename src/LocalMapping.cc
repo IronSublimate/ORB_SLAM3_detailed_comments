@@ -339,7 +339,8 @@ void LocalMapping::Run()
             while(isStopped() && !CheckFinish())
             {
                 // 如果还没有结束利索,那么等等它
-                usleep(3000);
+//                usleep(3000);
+                std::this_thread::yield();
             }
             // 然后确定终止了就跳出这个线程的主循环
             if(CheckFinish())
@@ -356,7 +357,8 @@ void LocalMapping::Run()
         if(CheckFinish())
             break;
 
-        usleep(3000);
+//        usleep(3000);
+        std::this_thread::yield();
     }
 
     // 设置线程已经终止
@@ -1395,7 +1397,8 @@ void LocalMapping::RequestReset()
             if(!mbResetRequested)
                 break;
         }
-        usleep(3000);
+//        usleep(3000);
+        std::this_thread::yield();
     }
     cout << "LM: Map reset, Done!!!" << endl;
 }
@@ -1420,7 +1423,8 @@ void LocalMapping::RequestResetActiveMap(Map* pMap)
             if(!mbResetRequestedActiveMap)
                 break;
         }
-        usleep(3000);
+//        usleep(3000);
+            std::this_thread::yield();
     }
     cout << "LM: Active map reset, Done!!!" << endl;
 }

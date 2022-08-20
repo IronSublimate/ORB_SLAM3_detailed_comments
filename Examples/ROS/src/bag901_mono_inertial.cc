@@ -58,6 +58,7 @@ int main(int argc, char **argv) {
 //    for(const auto& m:rosbag::View(bag)){
     rosbag::View vb(bag);
     vector<ORB_SLAM3::IMU::Point> vImuMeas;
+
     for (auto it = vb.begin(); it != vb.end(); ++it) {
         if (it->getTopic() == "/ULV_imu_std_msg") {
 //            cerr<<m.getTime()<<"\n";
@@ -73,6 +74,7 @@ int main(int argc, char **argv) {
             auto cv_ptr = cv_bridge::toCvCopy(img_ptr, sensor_msgs::image_encodings::MONO8);
 
             SLAM.TrackMonocular(cv_ptr->image, it->getTime().toSec(), vImuMeas);
+//            std::this_thread::sleep_for(100ms);
             vImuMeas.clear();
         } else {
 
