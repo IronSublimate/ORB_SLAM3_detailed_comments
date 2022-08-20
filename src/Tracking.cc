@@ -3261,6 +3261,7 @@ void Tracking::PrintTimeStats()
         mpLocalMapper->mnMatchesInliers = mnMatchesInliers;
         // Step 5：根据跟踪匹配数目及重定位情况决定是否跟踪成功
         // 如果最近刚刚发生了重定位,那么至少成功匹配50个点才认为是成功跟踪
+        std::cerr<<"matched inline: "<<mnMatchesInliers<<"\n";
         if (mCurrentFrame.mnId < mnLastRelocFrameId + mMaxFrames && mnMatchesInliers < 50)
             return false;
 
