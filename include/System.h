@@ -26,17 +26,7 @@
 #include <Eigen/Core>
 #include <sophus/se3.hpp>
 
-//#include "Tracking.h"
-//#include "FrameDrawer.h"
-//#include "MapDrawer.h"
-//#include "Atlas.h"
-//#include "LocalMapping.h"
-//#include "LoopClosing.h"
-//#include "KeyFrameDatabase.h"
-//#include "ORBVocabulary.h"
-//#include "Viewer.h"
 #include "ImuTypes.h"
-//#include "Settings.h"
 
 
 namespace ORB_SLAM3

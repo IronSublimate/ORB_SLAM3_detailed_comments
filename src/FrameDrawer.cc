@@ -20,13 +20,13 @@
 #include <mutex>
 
 #include <opencv2/core/core.hpp>
-//#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
 
 #include "Tracking.h"
 #include "MapPoint.h"
 #include "Atlas.h"
+#include "Frame.h"
 
 namespace ORB_SLAM3
 {
@@ -84,17 +84,17 @@ cv::Mat FrameDrawer::DrawFrame(float imageScale)
             vbVO = mvbVO;
             vbMap = mvbMap;
 
-            currentFrame = mCurrentFrame;
-            vpLocalMap = mvpLocalMap;
-            vMatchesKeys = mvMatchedKeys;
-            vpMatchedMPs = mvpMatchedMPs;
-            vOutlierKeys = mvOutlierKeys;
-            vpOutlierMPs = mvpOutlierMPs;
-            mProjectPoints = mmProjectPoints;
-            mMatchedInImage = mmMatchedInImage;
-
-            vCurrentDepth = mvCurrentDepth;
-            thDepth = mThDepth;
+//            currentFrame = *mpCurrentFrame;
+//            vpLocalMap = mvpLocalMap;
+//            vMatchesKeys = mvMatchedKeys;
+//            vpMatchedMPs = mvpMatchedMPs;
+//            vOutlierKeys = mvOutlierKeys;
+//            vpOutlierMPs = mvpOutlierMPs;
+//            mProjectPoints = mmProjectPoints;
+//            mMatchedInImage = mmMatchedInImage;
+//
+//            vCurrentDepth = mvCurrentDepth;
+//            thDepth = mThDepth;
 
         }
         else if(mState==Tracking::LOST)
@@ -393,8 +393,8 @@ void FrameDrawer::Update(Tracking *pTracker)
     mbOnlyTracking = pTracker->mbOnlyTracking;
 
     //Variables for the new visualization
-    mCurrentFrame = pTracker->mCurrentFrame;
-    mmProjectPoints = mCurrentFrame.mmProjectPoints;
+    mpCurrentFrame = &pTracker->mCurrentFrame;
+    mmProjectPoints = mpCurrentFrame->mmProjectPoints;
     mmMatchedInImage.clear();
 
     mvpLocalMap = pTracker->GetLocalMapMPS();

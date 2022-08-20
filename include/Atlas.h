@@ -19,15 +19,16 @@
 #ifndef ATLAS_H
 #define ATLAS_H
 
-#include "Map.h"
-#include "MapPoint.h"
-#include "KeyFrame.h"
-#include "Frame.h"
-#include "GeometricCamera.h"
+//#include "Map.h"
+//#include "MapPoint.h"
+//#include "KeyFrame.h"
+//#include "Frame.h"
+//#include "GeometricCamera.h"
 //#include "Pinhole.h"
 //#include "KannalaBrandt8.h"
 
 #include <set>
+#include <map>
 #include <mutex>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/export.hpp>
@@ -43,6 +44,8 @@ class KeyFrameDatabase;
 class Frame;
 class KannalaBrandt8;
 class Pinhole;
+class GeometricCamera;
+class ORBVocabulary;
 
 //BOOST_CLASS_EXPORT_GUID(Pinhole, "Pinhole")
 //BOOST_CLASS_EXPORT_GUID(KannalaBrandt8, "KannalaBrandt8")
@@ -54,26 +57,7 @@ class Atlas
 
     // 保存读取都用这个
     template<class Archive>
-    void serialize(Archive &ar, const unsigned int version)
-    {
-        // 由于保存相机是基类，但是实际使用是派生类，所以声明一下
-        ar.template register_type<Pinhole>();
-        ar.template register_type<KannalaBrandt8>();
-
-        // Save/load a set structure, the set structure is broken in libboost 1.58 for ubuntu 16.04, a vector is serializated
-        //ar & mspMaps;
-        // 基础类型不用管，但是自定义的类里面要进一步写serialize函数，确定保存内容
-        ar & mvpBackupMaps;
-        ar & mvpCameras;
-        // Need to save/load the static Id from Frame, KeyFrame, MapPoint and Map
-        ar & Map::nNextId;
-        ar & Frame::nNextId;
-        ar & KeyFrame::nNextId;
-        ar & MapPoint::nNextId;
-        ar & GeometricCamera::nNextId;
-        ar & mnLastInitKFidMap;
-    }
-
+    void serialize(Archive &ar, const unsigned int version);
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 

@@ -29,9 +29,11 @@
 #include "System.h"
 #include "utils.h"
 #include "KeyFrame.h"
-#include "KeyFrame.h"
+#include "Frame.h"
 #include "KeyFrameDatabase.h"
 #include "Atlas.h"
+#include "Map.h"
+#include "MapPoint.h"
 
 #include <mutex>
 #include <thread>

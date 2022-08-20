@@ -15,13 +15,27 @@
  * You should have received a copy of the GNU General Public License along with ORB-SLAM3.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+#include <sophus/se3.hpp>
+#include "SerializationUtils.h"
 
 #include "Atlas.h"
-#include "Viewer.h"
 
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+
+
+
+#include "Viewer.h"
 #include "GeometricCamera.h"
 #include "Pinhole.h"
 #include "KannalaBrandt8.h"
+#include "Map.h"
+#include "MapPoint.h"
+#include "KeyFrame.h"
+#include "Frame.h"
+
 
 namespace ORB_SLAM3
 {
@@ -54,6 +68,31 @@ Atlas::~Atlas()
             ++it;
     }
 }
+
+    template<class Archive>
+    void Atlas::serialize(Archive &ar, const unsigned int version)
+    {
+        // 由于保存相机是基类，但是实际使用是派生类，所以声明一下
+        ar.template register_type<Pinhole>();
+        ar.template register_type<KannalaBrandt8>();
+
+        // Save/load a set structure, the set structure is broken in libboost 1.58 for ubuntu 16.04, a vector is serializated
+        //ar & mspMaps;
+        // 基础类型不用管，但是自定义的类里面要进一步写serialize函数，确定保存内容
+        ar & mvpBackupMaps;
+        ar & mvpCameras;
+        // Need to save/load the static Id from Frame, KeyFrame, MapPoint and Map
+        ar & Map::nNextId;
+        ar & Frame::nNextId;
+        ar & KeyFrame::nNextId;
+        ar & MapPoint::nNextId;
+        ar & GeometricCamera::nNextId;
+        ar & mnLastInitKFidMap;
+    }
+    template void Atlas::serialize<boost::archive::binary_oarchive>(boost::archive::binary_oarchive&, unsigned int);
+    template void Atlas::serialize<boost::archive::binary_iarchive>(boost::archive::binary_iarchive&, unsigned int);
+    template void Atlas::serialize<boost::archive::text_iarchive>(boost::archive::text_iarchive&, unsigned int);
+    template void Atlas::serialize<boost::archive::text_oarchive>(boost::archive::text_oarchive&, unsigned int);
 
 /**
  * @brief 创建新地图，如果当前活跃地图有效，先存储当前地图为不活跃地图，然后新建地图；否则，可以直接新建地图。
