@@ -67,13 +67,13 @@ int main(int argc, char **argv) {
             vImuMeas.emplace_back(
                     imu_ptr->linear_acceleration.x, imu_ptr->linear_acceleration.y, imu_ptr->linear_acceleration.z,
                     imu_ptr->angular_velocity.x, imu_ptr->angular_velocity.y, imu_ptr->angular_velocity.z,
-                    it->getTime().toSec()
+                    imu_ptr->header.stamp.toSec()
             );
         } else if (it->getTopic() == "/miivii_gmsl_ros_raw_front_node/camera0/compressed") {
             auto img_ptr = it->instantiate<sensor_msgs::CompressedImage>();
             auto cv_ptr = cv_bridge::toCvCopy(img_ptr, sensor_msgs::image_encodings::MONO8);
 
-            SLAM.TrackMonocular(cv_ptr->image, it->getTime().toSec(), vImuMeas);
+            SLAM.TrackMonocular(cv_ptr->image, cv_ptr->header.stamp.toSec(), vImuMeas);
 //            std::this_thread::sleep_for(100ms);
             vImuMeas.clear();
         } else {
