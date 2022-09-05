@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License along with ORB-SLAM3.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+#include <thread>
+
 #include <sophus/se3.hpp>
 #include "SerializationUtils.h"
 
@@ -308,8 +310,10 @@ Map *Atlas::GetCurrentMap()
     unique_lock<mutex> lock(mMutexAtlas);
     if (!mpCurrentMap)
         CreateNewMap();
-    while (mpCurrentMap->IsBad())
-        usleep(3000);
+    while (mpCurrentMap->IsBad()){
+        std::this_thread::yield();
+    }
+//        usleep(3000);
 
     return mpCurrentMap;
 }
