@@ -28,7 +28,7 @@
 #include "Pinhole.h"
 #include "KannalaBrandt8.h"
 #include "MLPnPsolver.h"
-#include "GeometricTools.h"
+//#include "GeometricTools.h"
 #include "System.h"
 #include "Map.h"
 #include "MapPoint.h"
@@ -1616,8 +1616,10 @@ namespace ORB_SLAM3 {
                     bSleep = true;
                 }
             }
-            if (bSleep)
-                usleep(500);
+            if (bSleep){
+                std::this_thread::yield();
+            }
+//                usleep(500);
         }
 
         // Step 2.对两帧之间进行中值积分处理
@@ -1792,8 +1794,10 @@ namespace ORB_SLAM3 {
 
         if (bStepByStep) {
             std::cout << "Tracking: Waiting to the next step" << std::endl;
-            while (!mbStep && bStepByStep)
-                usleep(500);
+            while (!mbStep && bStepByStep) {
+//                usleep(500);
+                std::this_thread::yield();
+            }
             mbStep = false;
         }
 
@@ -2409,7 +2413,8 @@ namespace ORB_SLAM3 {
         // Safe area to stop
         while(isStopped())
         {
-            usleep(3000);
+//            usleep(3000);
+            std::this_thread::yield();
         }
     }
 #endif
@@ -4156,8 +4161,10 @@ namespace ORB_SLAM3 {
         // 基本上是挨个请求各个线程终止
         if (mpViewer) {
             mpViewer->RequestStop();
-            while (!mpViewer->isStopped())
-                usleep(3000);
+            while (!mpViewer->isStopped()) {
+                std::this_thread::yield();
+//                usleep(3000);
+            }
         }
 
         // Reset Local Mapping
@@ -4217,8 +4224,10 @@ namespace ORB_SLAM3 {
         Verbose::PrintMess("Active map Reseting", Verbose::VERBOSITY_NORMAL);
         if (mpViewer) {
             mpViewer->RequestStop();
-            while (!mpViewer->isStopped())
-                usleep(3000);
+            while (!mpViewer->isStopped()) {
+//                usleep(3000);
+                std::this_thread::yield();
+            }
         }
 
         Map *pMap = mpAtlas->GetCurrentMap();
@@ -4393,7 +4402,8 @@ namespace ORB_SLAM3 {
 
         while (!mCurrentFrame.imuIsPreintegrated()) {
             // 当前帧需要预积分完毕，这段函数实在localmapping里调用的
-            usleep(500);
+//            usleep(500);
+            std::this_thread::yield();
         }
 
         // TODO 如果上一帧正好是上一帧的上一关键帧（mLastFrame.mpLastKeyFrame与mLastFrame不可能是一个，可以验证一下）

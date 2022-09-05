@@ -35,10 +35,11 @@ int main(int argc, char **argv) {
 //    ros::init(argc, argv, "ros901_mono_inertial");
 //    ros::NodeHandle n("~");
 //    ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Info);
+
     bool bEqual = false;
     if (argc < 4 || argc > 5) {
         cerr << endl
-             << "Usage: rosrun ORB_SLAM3 901_mono_inertial path_to_rosbag path_to_vocabulary path_to_settings [do_equalize]"
+             << "Usage: rosrun ORB_SLAM3 bag901_mono_inertial path_to_rosbag path_to_vocabulary path_to_settings [do_equalize]"
              << endl;
         return -1;
     }
@@ -56,7 +57,9 @@ int main(int argc, char **argv) {
     ORB_SLAM3::System SLAM(argv[2], argv[3], ORB_SLAM3::System::IMU_MONOCULAR, true);
 //
 //    for(const auto& m:rosbag::View(bag)){
+#if 0
     rosbag::View vb(bag);
+
     vector<ORB_SLAM3::IMU::Point> vImuMeas;
 
     for (auto it = vb.begin(); it != vb.end(); ++it) {
@@ -79,8 +82,11 @@ int main(int argc, char **argv) {
         } else {
 
         }
+        break;
     }
     SLAM.Shutdown();
+//    bag.close();
+#endif
     return 0;
 }
 

@@ -359,7 +359,8 @@ void LoopClosing::Run()
             break;
         }
 
-        usleep(5000);
+//        usleep(5000);
+        std::this_thread::yield();
     }
 
     SetFinish();
@@ -1309,7 +1310,8 @@ void LoopClosing::CorrectLoop()
     // 一直等到局部地图线程结束再继续
     while(!mpLocalMapper->isStopped())
     {
-        usleep(1000);
+        std::this_thread::yield();
+//        usleep(1000);
     }
 
     // Ensure current keyframe is updated
@@ -1637,7 +1639,8 @@ void LoopClosing::MergeLocal()
     // 等待局部建图工作停止
     while(!mpLocalMapper->isStopped())
     {
-        usleep(1000);
+        std::this_thread::yield();
+//        usleep(1000);
     }
     //cout << "Local Map stopped" << endl;
 
@@ -2228,7 +2231,8 @@ void LoopClosing::MergeLocal()
         // Wait until Local Mapping has effectively stopped
         while(!mpLocalMapper->isStopped())
         {
-            usleep(1000);
+            std::this_thread::yield();
+//            usleep(1000);
         }
 
         // Optimize graph (and update the loop position for each element form the begining to the end)
@@ -2362,7 +2366,8 @@ void LoopClosing::MergeLocal2()
     // 等待直到完全停掉
     while(!mpLocalMapper->isStopped())
     {
-        usleep(1000);
+        std::this_thread::yield();
+//        usleep(1000);
     }
     //cout << "Local Map stopped" << endl;
 
@@ -2806,7 +2811,8 @@ void LoopClosing::RequestReset()
         if(!mbResetRequested)
             break;
         }
-        usleep(5000);
+        std::this_thread::yield();
+//        usleep(5000);
     }
 }
 
@@ -2825,7 +2831,8 @@ void LoopClosing::RequestResetActiveMap(Map *pMap)
             if(!mbResetActiveMapRequested)
                 break;
         }
-        usleep(3000);
+        std::this_thread::yield();
+//        usleep(3000);
     }
 }
 
@@ -2931,7 +2938,8 @@ void LoopClosing::RunGlobalBundleAdjustment(Map* pActiveMap, unsigned long nLoop
 
             while(!mpLocalMapper->isStopped() && !mpLocalMapper->isFinished())
             {
-                usleep(1000);
+//                usleep(1000);
+                std::this_thread::yield();
             }
 
             // Get Map Mutex

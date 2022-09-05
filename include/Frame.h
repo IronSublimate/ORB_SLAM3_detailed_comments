@@ -240,7 +240,7 @@ public:
 
     // MapPoints associated to keypoints, NULL pointer if no association.
     // Flag to identify outlier associations.
-    std::vector<bool> mvbOutlier;
+    std::vector<bool> mvbOutlier; //优化的时候会把一些点设为外点
     int mnCloseMPs;
 
     // Keypoints are assigned to cells in a grid to reduce matching complexity when projecting MapPoints.
