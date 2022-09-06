@@ -298,6 +298,12 @@ namespace ORB_SLAM3 {
         delete this->mpLocalMapper;
         delete this->mpViewer;
 
+        delete this->settings_;
+        delete this->mpMapDrawer;
+        delete this->mpFrameDrawer;
+        delete this->mpAtlas;
+        delete this->mpKeyFrameDatabase;
+        delete this->mpVocabulary;
     }
 
     Sophus::SE3f System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timestamp,

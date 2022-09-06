@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 //    ros::init(argc, argv, "ros901_mono_inertial");
 //    ros::NodeHandle n("~");
 //    ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Info);
-
+    cerr<<argv[0]<<"\n";
     bool bEqual = false;
     if (argc < 4 || argc > 5) {
         cerr << endl
@@ -46,6 +46,10 @@ int main(int argc, char **argv) {
 
     rosbag::Bag bag;
     bag.open(argv[1]);
+    std::string bag_path(argv[1]);
+    auto pos = bag_path.rfind('/')+1;
+    std::string bag_name = bag_path.substr(pos,bag_path.size()-pos-4); //bag name without prefix
+//    cerr<<bag_name<<"\n";
 
     if (argc == 5) {
         std::string sbEqual(argv[4]);
@@ -55,18 +59,30 @@ int main(int argc, char **argv) {
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
     ORB_SLAM3::System SLAM(argv[2], argv[3], ORB_SLAM3::System::IMU_MONOCULAR, true);
-//
+//    ORB_SLAM3::System SLAM(argv[2], argv[3], ORB_SLAM3::System::IMU_MONOCULAR, true);
+
 //    for(const auto& m:rosbag::View(bag)){
-#if 0
     rosbag::View vb(bag);
+//    std::ofstream of("imu2.csv");
 
     vector<ORB_SLAM3::IMU::Point> vImuMeas;
-
+//    boost::shared_ptr<sensor_msgs::Imu> last_imu{nullptr};
     for (auto it = vb.begin(); it != vb.end(); ++it) {
         if (it->getTopic() == "/ULV_imu_std_msg") {
 //            cerr<<m.getTime()<<"\n";
             auto imu_ptr = it->instantiate<sensor_msgs::Imu>();
 //            imu_ptr->header.stamp = it->getTime();
+//                of << imu_ptr->linear_acceleration.x <<", "<< imu_ptr->linear_acceleration.y <<", "<< imu_ptr->linear_acceleration.z <<", "<<
+//                        imu_ptr->angular_velocity.x <<", "<< imu_ptr->angular_velocity.y <<", "<< imu_ptr->angular_velocity.z<<"\n";
+//            if(std::abs(imu_ptr->linear_acceleration.x)>5 or
+//                    std::abs(imu_ptr->linear_acceleration.y)>5 or
+//                    std::abs(imu_ptr->linear_acceleration.z-10)>5 or
+//                    std::abs(imu_ptr->angular_velocity.x)>5 or
+//                    std::abs(imu_ptr->angular_velocity.y)>5 or
+//                    std::abs(imu_ptr->angular_velocity.z)>5
+//                    ){
+//                continue;
+//            }
             vImuMeas.emplace_back(
                     imu_ptr->linear_acceleration.x, imu_ptr->linear_acceleration.y, imu_ptr->linear_acceleration.z,
                     imu_ptr->angular_velocity.x, imu_ptr->angular_velocity.y, imu_ptr->angular_velocity.z,
@@ -82,11 +98,12 @@ int main(int argc, char **argv) {
         } else {
 
         }
-        break;
+//        break;
     }
     SLAM.Shutdown();
-//    bag.close();
-#endif
+    string save_path = "./output/"+bag_name+".txt";
+    SLAM.SaveTrajectoryTUM(save_path);
+    bag.close();
     return 0;
 }
 

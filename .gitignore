@@ -76,3 +76,5 @@ cmake-build-*
 *.pyc
 *.osa
 .vscode/settings.json
+
+/output
