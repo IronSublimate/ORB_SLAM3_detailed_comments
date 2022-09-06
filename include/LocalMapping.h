@@ -29,6 +29,7 @@
 
 #include <mutex>
 #include <list>
+#include <atomic>
 #include <fstream>
 
 #include <Eigen/Core>
@@ -190,7 +191,7 @@ protected:
     void ScaleRefinement();
 
     //hyx:FIXME:感觉应该改成atomic的，判断是不是正在初始化是在Tracking线程里调用的
-    bool bInitializing;
+    std::atomic<bool> bInitializing;
 
     Eigen::MatrixXd infoInertial;
     int mNumLM;

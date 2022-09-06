@@ -245,10 +245,17 @@ void LocalMapping::Run()
                 {
                     // 在函数InitializeIMU里设置IMU成功初始化标志 SetImuInitialized
                     // IMU第一阶段初始化
-                    if (mbMonocular)
-                        InitializeIMU(1e2, 1e10, true);
-                    else
-                        InitializeIMU(1e2, 1e5, true);
+                    if(not bInitializing) {
+                        std::thread s([this]() {
+                            bInitializing = true;
+                            if (mbMonocular)
+                                InitializeIMU(1e2, 1e10, true);
+                            else
+                                InitializeIMU(1e2, 1e5, true);
+                            bInitializing = false;
+                        });
+                        s.detach();
+                    }
                 }
 
 
@@ -277,28 +284,42 @@ void LocalMapping::Run()
                             // 如果累计时间差大于5s，开始VIBA1（IMU第二阶段初始化）
                             if (mTinit>5.0f)
                             {
-                                cout << "start VIBA 1" << endl;
-                                mpCurrentKeyFrame->GetMap()->SetIniertialBA1();
-                                if (mbMonocular)
-                                    InitializeIMU(1.f, 1e5, true);
-                                else
-                                    InitializeIMU(1.f, 1e5, true);
+                                if(not bInitializing) {
+                                    std::thread s([this](){
+                                        bInitializing = true;
+                                        cout << "start VIBA 1" << endl;
+                                        mpCurrentKeyFrame->GetMap()->SetIniertialBA1();
+                                        if (mbMonocular)
+                                            InitializeIMU(1.f, 1e5, true);
+                                        else
+                                            InitializeIMU(1.f, 1e5, true);
 
-                                cout << "end VIBA 1" << endl;
+                                        cout << "end VIBA 1" << endl;
+                                        bInitializing = false;
+                                    });
+                                    s.detach();
+                                }
                             }
                         }
                         // Step 9.2 根据条件判断是否进行VIBA2（IMU第三阶段初始化）
                         // 当前关键帧所在的地图还未完成VIBA 2
                         else if(!mpCurrentKeyFrame->GetMap()->GetIniertialBA2()){
                             if (mTinit>15.0f){
-                                cout << "start VIBA 2" << endl;
-                                mpCurrentKeyFrame->GetMap()->SetIniertialBA2();
-                                if (mbMonocular)
-                                    InitializeIMU(0.f, 0.f, true);
-                                else
-                                    InitializeIMU(0.f, 0.f, true);
+                                if(not bInitializing){
+                                    std::thread s([this](){
+                                        bInitializing = true;
+                                        cout << "start VIBA 2" << endl;
+                                        mpCurrentKeyFrame->GetMap()->SetIniertialBA2();
+                                        if (mbMonocular)
+                                            InitializeIMU(0.f, 0.f, true);
+                                        else
+                                            InitializeIMU(0.f, 0.f, true);
 
-                                cout << "end VIBA 2" << endl;
+                                        cout << "end VIBA 2" << endl;
+                                        bInitializing = false;
+                                    });
+                                    s.detach();
+                                }
                             }
                         }
 

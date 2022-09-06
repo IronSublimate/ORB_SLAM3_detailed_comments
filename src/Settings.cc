@@ -43,7 +43,7 @@ namespace ORB_SLAM3 {
                 std::cerr << name << " required parameter does not exist, aborting..." << std::endl;
                 exit(-1);
             } else {
-                std::cerr << name << " optional parameter does not exist..." << std::endl;
+                std::cout << name << " optional parameter does not exist..." << std::endl;
                 found = false;
                 return 0.0f;
             }
@@ -65,7 +65,7 @@ namespace ORB_SLAM3 {
                 std::cerr << name << " required parameter does not exist, aborting..." << std::endl;
                 exit(-1);
             } else {
-                std::cerr << name << " optional parameter does not exist..." << std::endl;
+                std::cout << name << " optional parameter does not exist..." << std::endl;
                 found = false;
                 return 0;
             }
@@ -87,7 +87,7 @@ namespace ORB_SLAM3 {
                 std::cerr << name << " required parameter does not exist, aborting..." << std::endl;
                 exit(-1);
             } else {
-                std::cerr << name << " optional parameter does not exist..." << std::endl;
+                std::cout << name << " optional parameter does not exist..." << std::endl;
                 found = false;
                 return string();
             }
@@ -109,7 +109,7 @@ namespace ORB_SLAM3 {
                 std::cerr << name << " required parameter does not exist, aborting..." << std::endl;
                 exit(-1);
             } else {
-                std::cerr << name << " optional parameter does not exist..." << std::endl;
+                std::cout << name << " optional parameter does not exist..." << std::endl;
                 found = false;
                 return cv::Mat();
             }

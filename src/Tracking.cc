@@ -1801,6 +1801,11 @@ namespace ORB_SLAM3 {
             mbStep = false;
         }
 
+        //wait for localMapping imu init
+//        while(mpLocalMapper->IsInitializing()){
+//            std::this_thread::yield();
+//        }
+
         // Step 1 如局部建图里认为IMU有问题，重置当前活跃地图
         if (mpLocalMapper->mbBadImu) {
             cout << "TRACK: Reset map because local mapper set the bad imu flag " << endl;
