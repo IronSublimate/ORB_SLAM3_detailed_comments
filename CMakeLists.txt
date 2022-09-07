@@ -41,14 +41,7 @@ add_subdirectory(Examples/ROS ${CMAKE_CURRENT_BINARY_DIR}/ROS)
 
 #LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
-find_package(OpenCV 4)
-#   if(NOT OpenCV_FOUND)
-#      message(FATAL_ERROR "OpenCV > 4.4 not found.")
-#   endif()
-
-#MESSAGE("OPENCV VERSION:")
-#MESSAGE(${OpenCV_VERSION})
-
+find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Pangolin REQUIRED)
 #find_package(DBoW2 REQUIRED)
@@ -110,7 +103,7 @@ target_link_libraries(${PROJECT_NAME}
         ${EIGEN3_LIBS}
         ${Pangolin_LIBRARIES}
 #        ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
-        DBoW2
+        DBoW2_ORBSLAM3
 #        ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
         ${Sophus_LIBRARIES}
 #        ${DBoW2_LIBS}
