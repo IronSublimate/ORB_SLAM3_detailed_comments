@@ -29,17 +29,11 @@ set(SRCS_DUTILS
   DUtils/Timestamp.cpp)
 
 
-find_package(OpenCV 4 QUIET)
-if(NOT OpenCV_FOUND)
-   find_package(OpenCV 3.0 QUIET)
-   if(NOT OpenCV_FOUND)
-      message(FATAL_ERROR "OpenCV > 3.0 not found.")
-   endif()
-endif()
+find_package(OpenCV REQUIRED)
 
 #set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
-add_library(DBoW2 SHARED ${SRCS_DBOW2} ${SRCS_DUTILS})
-target_include_directories(DBoW2 PUBLIC ${OpenCV_INCLUDE_DIRS})
-target_link_libraries(DBoW2 ${OpenCV_LIBS})
+add_library(DBoW2_ORBSLAM3 SHARED ${SRCS_DBOW2} ${SRCS_DUTILS})
+target_include_directories(DBoW2_ORBSLAM3 PUBLIC ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(DBoW2_ORBSLAM3 ${OpenCV_LIBS})
 
