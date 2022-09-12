@@ -1802,9 +1802,9 @@ namespace ORB_SLAM3 {
         }
 
         //wait for localMapping imu init
-//        while(mpLocalMapper->IsInitializing()){
-//            std::this_thread::yield();
-//        }
+        while(mpLocalMapper->IsInitializing()){
+            std::this_thread::yield();
+        }
 
         // Step 1 如局部建图里认为IMU有问题，重置当前活跃地图
         if (mpLocalMapper->mbBadImu) {
@@ -4405,10 +4405,14 @@ namespace ORB_SLAM3 {
         mLastFrame.SetNewBias(mLastBias);
         mCurrentFrame.SetNewBias(mLastBias);
 
-        while (!mCurrentFrame.imuIsPreintegrated()) {
+//        while (!mCurrentFrame.imuIsPreintegrated()) {
             // 当前帧需要预积分完毕，这段函数实在localmapping里调用的
 //            usleep(500);
-            std::this_thread::yield();
+//            std::this_thread::yield();
+//        }
+// 如果用上面的会死锁
+        if(!mCurrentFrame.imuIsPreintegrated()){
+            PreintegrateIMU();
         }
 
         // TODO 如果上一帧正好是上一帧的上一关键帧（mLastFrame.mpLastKeyFrame与mLastFrame不可能是一个，可以验证一下）
