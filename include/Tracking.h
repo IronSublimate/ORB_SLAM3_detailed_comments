@@ -364,6 +364,9 @@ protected:
 
     void newParameterLoader(Settings* settings);
 
+    void new_map_point_in_monocular(KeyFrame* pKF);
+    void new_map_point_in_monocular2(KeyFrame* pKF);
+
 #ifdef REGISTER_LOOP
     bool Stop();
 
