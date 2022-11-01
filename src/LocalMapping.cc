@@ -676,8 +676,7 @@ void LocalMapping::CreateNewMapPoints()
             const float kp1_ur=mpCurrentKeyFrame->mvuRight[idx1];
             bool bStereo1 = (!mpCurrentKeyFrame->mpCamera2 && kp1_ur>=0);
             // 查看点idx1是否为右目的点
-            const bool bRight1 = (mpCurrentKeyFrame -> NLeft == -1 || idx1 < mpCurrentKeyFrame -> NLeft) ? false
-                                                                                                         : true;
+            const bool bRight1 = !(mpCurrentKeyFrame->NLeft == -1 || idx1 < mpCurrentKeyFrame->NLeft);
             
             
             // 5.2
@@ -690,8 +689,7 @@ void LocalMapping::CreateNewMapPoints()
             const float kp2_ur = pKF2->mvuRight[idx2];
             bool bStereo2 = (!pKF2->mpCamera2 && kp2_ur>=0);
             // 查看点idx2是否为右目的点
-            const bool bRight2 = (pKF2 -> NLeft == -1 || idx2 < pKF2 -> NLeft) ? false
-                                                                               : true;
+            const bool bRight2 = !(pKF2->NLeft == -1 || idx2 < pKF2->NLeft);
 
             // 5.3 当目前为左右目时，确定两个点所在相机之间的位姿关系
             if(mpCurrentKeyFrame->mpCamera2 && pKF2->mpCamera2){

@@ -72,7 +72,7 @@ set(LIBS
 
         ${Boost_LIBRARIES}
 #        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/DBoW2/lib/libDBoW2.so
-        DBoW2
+        DBoW2_ORBSLAM3
 #        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/g2o/lib/libg2o.so
 #        ${PROJECT_SOURCE_DIR}/../../../lib/libORB_SLAM3.so
 #        ${DBoW2_LIBS}
@@ -149,5 +149,13 @@ add_executable(bag901_mono_inertial
         )
 
 target_link_libraries(bag901_mono_inertial
+        ${LIBS}
+        )
+
+add_executable(bag901_stereo
+        src/bag901_stereo.cc
+        )
+
+target_link_libraries(bag901_stereo
         ${LIBS}
         )

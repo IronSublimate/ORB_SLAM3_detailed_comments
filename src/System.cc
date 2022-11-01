@@ -71,9 +71,10 @@ namespace ORB_SLAM3 {
  * @param strSequence 序列名,在跟踪线程和局部建图线程用得到
  */
     System::System(const string &strVocFile, const string &strSettingsFile, const eSensor sensor,
-                   const bool bUseViewer, const int initFr, const string &strSequence) :
+                   const bool bUseViewer, const int initFr, const string &strSequence, bool only_tracking) :
             mSensor(sensor), mpViewer(static_cast<Viewer *>(NULL)), mbReset(false), mbResetActiveMap(false),
-            mbActivateLocalizationMode(false), mbDeactivateLocalizationMode(false), mbShutDown(false) {
+            mbActivateLocalizationMode(false), mbDeactivateLocalizationMode(false), mbShutDown(false),
+            only_tracking(only_tracking) {
         // Output welcome message
         cout << endl <<
              "ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza."
@@ -232,7 +233,9 @@ namespace ORB_SLAM3 {
         mpLocalMapper = new LocalMapping(this, mpAtlas, mSensor == MONOCULAR || mSensor == IMU_MONOCULAR,
                                          mSensor == IMU_MONOCULAR || mSensor == IMU_STEREO || mSensor == IMU_RGBD,
                                          strSequence);
-        mptLocalMapping = new thread(&ORB_SLAM3::LocalMapping::Run, mpLocalMapper);
+        if(not this->only_tracking) {
+            mptLocalMapping = new thread(&ORB_SLAM3::LocalMapping::Run, mpLocalMapper);
+        }
         mpLocalMapper->mInitFr = initFr;
 
         // 设置最远3D地图点的深度值，如果超过阈值，说明可能三角化不太准确，丢弃
@@ -252,7 +255,9 @@ namespace ORB_SLAM3 {
         // 创建并开启闭环线程
         mpLoopCloser = new LoopClosing(mpAtlas, mpKeyFrameDatabase, mpVocabulary, mSensor != MONOCULAR,
                                        activeLC); // mSensor!=MONOCULAR);
-        mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
+        if(not this->only_tracking) {
+            mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
+        }
 
         //Set pointers between threads
         // 设置线程间的指针
@@ -286,7 +291,7 @@ namespace ORB_SLAM3 {
     }
 
     System::~System() {
-        if(not this->isShutDown()){
+        if (not this->isShutDown()) {
             this->Shutdown();
         }
         delete this->mptViewer;
@@ -615,7 +620,7 @@ namespace ORB_SLAM3 {
         }
         this->mptLocalMapping->join();
         this->mptLoopClosing->join();
-        if(this->mptViewer){
+        if (this->mptViewer) {
             this->mptViewer->join();
         }
         /*if(mpViewer)

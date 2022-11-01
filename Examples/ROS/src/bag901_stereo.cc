@@ -59,43 +59,37 @@ int main(int argc, char **argv) {
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
 //    ORB_SLAM3::System SLAM(argv[2], argv[3], ORB_SLAM3::System::IMU_MONOCULAR, true,0,{}, true);
-    ORB_SLAM3::System SLAM(argv[2], argv[3], ORB_SLAM3::System::MONOCULAR, true, 0, {}, false);
+    ORB_SLAM3::System SLAM(argv[2], argv[3], ORB_SLAM3::System::STEREO, true);
 
 //    for(const auto& m:rosbag::View(bag)){
     rosbag::View vb(bag);
 //    std::ofstream of("imu2.csv");
-
-    vector<ORB_SLAM3::IMU::Point> vImuMeas;
-//    boost::shared_ptr<sensor_msgs::Imu> last_imu{nullptr};
+    cv::Mat left, right;
     for (auto it = vb.begin(); it != vb.end(); ++it) {
-        if (it->getTopic() == "/ULV_imu_std_msg") {
-//            cerr<<m.getTime()<<"\n";
-            auto imu_ptr = it->instantiate<sensor_msgs::Imu>();
-//            imu_ptr->header.stamp = it->getTime();
-//                of << imu_ptr->linear_acceleration.x <<", "<< imu_ptr->linear_acceleration.y <<", "<< imu_ptr->linear_acceleration.z <<", "<<
-//                        imu_ptr->angular_velocity.x <<", "<< imu_ptr->angular_velocity.y <<", "<< imu_ptr->angular_velocity.z<<"\n";
-//            if(std::abs(imu_ptr->linear_acceleration.x)>5 or
-//                    std::abs(imu_ptr->linear_acceleration.y)>5 or
-//                    std::abs(imu_ptr->linear_acceleration.z-10)>5 or
-//                    std::abs(imu_ptr->angular_velocity.x)>5 or
-//                    std::abs(imu_ptr->angular_velocity.y)>5 or
-//                    std::abs(imu_ptr->angular_velocity.z)>5
-//                    ){
-//                continue;
-//            }
-            vImuMeas.emplace_back(
-                    imu_ptr->linear_acceleration.x, imu_ptr->linear_acceleration.y, imu_ptr->linear_acceleration.z,
-                    imu_ptr->angular_velocity.x, imu_ptr->angular_velocity.y, imu_ptr->angular_velocity.z,
-                    imu_ptr->header.stamp.toSec()
-            );
-        } else if (it->getTopic() == "/miivii_gmsl_ros_raw_front_node/camera0/compressed") {
+        if (it->getTopic() == "/miivii_gmsl_ros_raw_front_node/camera0/compressed") {
             auto img_ptr = it->instantiate<sensor_msgs::CompressedImage>();
             auto cv_ptr = cv_bridge::toCvCopy(img_ptr, sensor_msgs::image_encodings::MONO8);
 //            cv::Mat image=cv_ptr->image({0,0,cv_ptr->image.cols,640});
             cv_ptr->image({0, 640, cv_ptr->image.cols, cv_ptr->image.rows - 640}) = 111;
-            SLAM.TrackMonocular(cv_ptr->image, cv_ptr->header.stamp.toSec(), vImuMeas);
+            left = std::move(cv_ptr->image);
+            if (not right.empty()) {
+                SLAM.TrackStereo(left, right, cv_ptr->header.stamp.toSec());
+                left = cv::Mat();
+                right = cv::Mat();
+            }
+//            SLAM.TrackMonocular(cv_ptr->image, cv_ptr->header.stamp.toSec());
 //            std::this_thread::sleep_for(100ms);
-            vImuMeas.clear();
+        } else if (it->getTopic() == "/miivii_gmsl_ros_raw_front_node/camera1/compressed") {
+            auto img_ptr = it->instantiate<sensor_msgs::CompressedImage>();
+            auto cv_ptr = cv_bridge::toCvCopy(img_ptr, sensor_msgs::image_encodings::MONO8);
+//            cv::Mat image=cv_ptr->image({0,0,cv_ptr->image.cols,640});
+            cv_ptr->image({0, 640, cv_ptr->image.cols, cv_ptr->image.rows - 640}) = 111;
+            right = std::move(cv_ptr->image);
+            if (not left.empty()) {
+                SLAM.TrackStereo(left, right, cv_ptr->header.stamp.toSec());
+                left = cv::Mat();
+                right = cv::Mat();
+            }
         } else {
 
         }

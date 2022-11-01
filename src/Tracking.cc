@@ -42,6 +42,7 @@
 #include "LoopClosing.h"
 #include "LocalMapping.h"
 #include "Atlas.h"
+#include "GeometricTools.h"
 
 #include <iostream>
 #include <mutex>
@@ -1616,7 +1617,7 @@ namespace ORB_SLAM3 {
                     bSleep = true;
                 }
             }
-            if (bSleep){
+            if (bSleep) {
                 std::this_thread::yield();
             }
 //                usleep(500);
@@ -1802,9 +1803,9 @@ namespace ORB_SLAM3 {
         }
 
         //wait for localMapping imu init
-        while(mpLocalMapper->IsInitializing()){
-            std::this_thread::yield();
-        }
+//        while(mpLocalMapper->IsInitializing()){
+//            std::this_thread::yield();
+//        }
 
         // Step 1 如局部建图里认为IMU有问题，重置当前活跃地图
         if (mpLocalMapper->mbBadImu) {
@@ -3231,13 +3232,14 @@ namespace ORB_SLAM3 {
             }
         }
         // 查看内外点数目，调试用
-        aux1 = 0, aux2 = 0;
-        for (int i = 0; i < mCurrentFrame.N; i++)
-            if (mCurrentFrame.mvpMapPoints[i]) {
-                aux1++;
-                if (mCurrentFrame.mvbOutlier[i])
-                    aux2++;
-            }
+//        aux1 = 0, aux2 = 0;
+//        for (int i = 0; i < mCurrentFrame.N; i++) {
+//            if (mCurrentFrame.mvpMapPoints[i]) {
+//                aux1++;
+//                if (mCurrentFrame.mvbOutlier[i])
+//                    aux2++;
+//            }
+//        }
 
         mnMatchesInliers = 0;
 
@@ -3265,7 +3267,7 @@ namespace ORB_SLAM3 {
                     mCurrentFrame.mvpMapPoints[i] = static_cast<MapPoint *>(NULL);
             }
         }
-
+        std::cerr << "mnMatchesInliers: " << mnMatchesInliers << "\n";
         // Decide if the tracking was successful
         // More restrictive if there was a relocalization recently
         mpLocalMapper->mnMatchesInliers = mnMatchesInliers;
@@ -3511,7 +3513,7 @@ namespace ORB_SLAM3 {
             return;
 
         // Step 1：将当前帧构造成关键帧
-        KeyFrame *pKF = new KeyFrame(mCurrentFrame, mpAtlas->GetCurrentMap(), mpKeyFrameDB);
+        auto pKF = new KeyFrame(mCurrentFrame, mpAtlas->GetCurrentMap(), mpKeyFrameDB);
 
         if (mpAtlas->isImuInitialized()) //  || mpLocalMapper->IsInitializing())
             pKF->bImu = true;
@@ -3624,6 +3626,9 @@ namespace ORB_SLAM3 {
                 }
                 //Verbose::PrintMess("new mps for stereo KF: " + to_string(nPoints), Verbose::VERBOSITY_NORMAL);
             }
+        } else { //给单目整个三角化，添加地图点
+//            mCurrentFrame.UpdatePoseMatrices();
+//            this->new_map_point_in_monocular(pKF);
         }
 
         // Step 4：插入关键帧
@@ -4237,21 +4242,23 @@ namespace ORB_SLAM3 {
 
         Map *pMap = mpAtlas->GetCurrentMap();
 
-        if (!bLocMap) {
-            Verbose::PrintMess("Reseting Local Mapper...", Verbose::VERBOSITY_VERY_VERBOSE);
-            mpLocalMapper->RequestResetActiveMap(pMap);
-            Verbose::PrintMess("done", Verbose::VERBOSITY_VERY_VERBOSE);
+        if (not this->mpSystem->is_only_tracking()) {
+            if (!bLocMap) {
+                Verbose::PrintMess("Reseting Local Mapper...", Verbose::VERBOSITY_VERY_VERBOSE);
+                mpLocalMapper->RequestResetActiveMap(pMap);
+                Verbose::PrintMess("done", Verbose::VERBOSITY_VERY_VERBOSE);
+            }
+
+            // Reset Loop Closing
+            Verbose::PrintMess("Reseting Loop Closing...", Verbose::VERBOSITY_NORMAL);
+            mpLoopClosing->RequestResetActiveMap(pMap);
+            Verbose::PrintMess("done", Verbose::VERBOSITY_NORMAL);
+
+            // Clear BoW Database
+            Verbose::PrintMess("Reseting Database", Verbose::VERBOSITY_NORMAL);
+            mpKeyFrameDB->clearMap(pMap); // Only clear the active map references
+            Verbose::PrintMess("done", Verbose::VERBOSITY_NORMAL);
         }
-
-        // Reset Loop Closing
-        Verbose::PrintMess("Reseting Loop Closing...", Verbose::VERBOSITY_NORMAL);
-        mpLoopClosing->RequestResetActiveMap(pMap);
-        Verbose::PrintMess("done", Verbose::VERBOSITY_NORMAL);
-
-        // Clear BoW Database
-        Verbose::PrintMess("Reseting Database", Verbose::VERBOSITY_NORMAL);
-        mpKeyFrameDB->clearMap(pMap); // Only clear the active map references
-        Verbose::PrintMess("done", Verbose::VERBOSITY_NORMAL);
 
         // Clear Map (this erase MapPoints and KeyFrames)
         mpAtlas->clearMap();
@@ -4406,12 +4413,12 @@ namespace ORB_SLAM3 {
         mCurrentFrame.SetNewBias(mLastBias);
 
 //        while (!mCurrentFrame.imuIsPreintegrated()) {
-            // 当前帧需要预积分完毕，这段函数实在localmapping里调用的
+        // 当前帧需要预积分完毕，这段函数实在localmapping里调用的
 //            usleep(500);
 //            std::this_thread::yield();
 //        }
 // 如果用上面的会死锁
-        if(!mCurrentFrame.imuIsPreintegrated()){
+        if (!mCurrentFrame.imuIsPreintegrated()) {
             PreintegrateIMU();
         }
 
@@ -4481,43 +4488,460 @@ namespace ORB_SLAM3 {
     }
 
 #ifdef REGISTER_LOOP
-                                                                                                                            void Tracking::RequestStop()
-{
-    unique_lock<mutex> lock(mMutexStop);
-    mbStopRequested = true;
-}
-
-bool Tracking::Stop()
-{
-    unique_lock<mutex> lock(mMutexStop);
-    if(mbStopRequested && !mbNotStop)
+    void Tracking::RequestStop()
     {
-        mbStopped = true;
-        cout << "Tracking STOP" << endl;
-        return true;
+        unique_lock<mutex> lock(mMutexStop);
+        mbStopRequested = true;
     }
 
-    return false;
-}
+    bool Tracking::Stop()
+    {
+        unique_lock<mutex> lock(mMutexStop);
+        if(mbStopRequested && !mbNotStop)
+        {
+            mbStopped = true;
+            cout << "Tracking STOP" << endl;
+            return true;
+        }
 
-bool Tracking::stopRequested()
-{
-    unique_lock<mutex> lock(mMutexStop);
-    return mbStopRequested;
-}
+        return false;
+    }
 
-bool Tracking::isStopped()
-{
-    unique_lock<mutex> lock(mMutexStop);
-    return mbStopped;
-}
+    bool Tracking::stopRequested()
+    {
+        unique_lock<mutex> lock(mMutexStop);
+        return mbStopRequested;
+    }
 
-void Tracking::Release()
-{
-    unique_lock<mutex> lock(mMutexStop);
-    mbStopped = false;
-    mbStopRequested = false;
-}
+    bool Tracking::isStopped()
+    {
+        unique_lock<mutex> lock(mMutexStop);
+        return mbStopped;
+    }
+
+    void Tracking::Release()
+    {
+        unique_lock<mutex> lock(mMutexStop);
+        mbStopped = false;
+        mbStopRequested = false;
+    }
 #endif
 
+    //从localMapping中拷贝过来
+    void Tracking::new_map_point_in_monocular(KeyFrame *pKF) {
+        float th = 0.6f;
+        bool mbInertial = (mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO ||
+                           mSensor == System::IMU_RGBD);
+        auto pKF2 = pKF->mPrevKF;
+        pKF->ComputeBoW();
+        pKF2->ComputeBoW();
+
+        // 特征点匹配配置 最小距离 < 0.6*次小距离，比较苛刻了。不检查旋转
+        ORBmatcher matcher(th, false);
+
+        // 取出当前帧从世界坐标系到相机坐标系的变换矩阵
+        Sophus::SE3<float> sophTcw1 = pKF->GetPose();
+        Eigen::Matrix<float, 3, 4> eigTcw1 = sophTcw1.matrix3x4();
+        Eigen::Matrix<float, 3, 3> Rcw1 = eigTcw1.block<3, 3>(0, 0);
+        Eigen::Matrix<float, 3, 3> Rwc1 = Rcw1.transpose();
+        Eigen::Vector3f tcw1 = sophTcw1.translation();
+        // 得到当前关键帧（左目）光心在世界坐标系中的坐标、内参
+        Eigen::Vector3f Ow1 = pKF->GetCameraCenter();
+
+        // 用于后面的点深度的验证;这里的1.5是经验值
+        const float ratioFactor = 1.5f * pKF->mfScaleFactor;
+
+
+        GeometricCamera *pCamera1 = pKF->mpCamera, *pCamera2 = pKF2->mpCamera;
+
+        // Check first that baseline is not too short
+        // 邻接的关键帧光心在世界坐标系中的坐标
+        Eigen::Vector3f Ow2 = pKF2->GetCameraCenter();
+        // 基线向量，两个关键帧间的相机位移
+        Eigen::Vector3f vBaseline = Ow2 - Ow1;
+        // 基线长度
+        const float baseline = vBaseline.norm();
+
+        // Step 3：判断相机运动的基线是不是足够长
+        // 单目相机情况
+        // 邻接关键帧的场景深度中值
+        const float medianDepthKF2 = pKF2->ComputeSceneMedianDepth(2);
+        // baseline与景深的比例
+        const float ratioBaselineDepth = baseline / medianDepthKF2;
+        // 如果特别远(比例特别小)，基线太短恢复3D点不准，那么跳过当前邻接的关键帧，不生成3D点
+//        if (ratioBaselineDepth < 0.01)
+//            return;
+
+        // Search matches that fullfil epipolar constraint
+        // Step 4：通过BoW对两关键帧的未匹配的特征点快速匹配，用极线约束抑制离群点，生成新的匹配点对
+        vector<pair<size_t, size_t> > vMatchedIndices;
+        // 当惯性模式下，并且经过三次初始化，且为刚丢失状态
+        bool bCoarse = mbInertial && this->mState == Tracking::RECENTLY_LOST && pKF->GetMap()->GetIniertialBA2();
+
+        // 通过极线约束的方式找到匹配点（且该点还没有成为MP，注意非单目已经生成的MP这里直接跳过不做匹配，所以最后并不会覆盖掉特征点对应的MP）
+        matcher.SearchForTriangulation(pKF, pKF2, vMatchedIndices, false, bCoarse);
+
+        // 取出与mpCurrentKeyFrame共视关键帧的内外参信息
+        Sophus::SE3<float> sophTcw2 = pKF2->GetPose();
+        Eigen::Matrix<float, 3, 4> eigTcw2 = sophTcw2.matrix3x4();
+        Eigen::Matrix<float, 3, 3> Rcw2 = eigTcw2.block<3, 3>(0, 0);
+        Eigen::Matrix<float, 3, 3> Rwc2 = Rcw2.transpose();
+        Eigen::Vector3f tcw2 = sophTcw2.translation();
+
+        const float &fx2 = pKF2->fx;
+        const float &fy2 = pKF2->fy;
+        const float &cx2 = pKF2->cx;
+        const float &cy2 = pKF2->cy;
+        const float &invfx2 = pKF2->invfx;
+        const float &invfy2 = pKF2->invfy;
+
+        // Triangulate each match
+        // Step 5：对每对匹配通过三角化生成3D点,和 Triangulate函数差不多
+        std::cerr << "vMatchedIndices.size(): " << vMatchedIndices.size() << "\n";
+        const int nmatches = vMatchedIndices.size();
+        for (int ikp = 0; ikp < nmatches; ikp++) {
+            // 5.0
+            // 当前匹配对在当前关键帧中的索引
+            const int &idx1 = vMatchedIndices[ikp].first;
+            // 当前匹配对在邻接关键帧中的索引
+            const int &idx2 = vMatchedIndices[ikp].second;
+
+
+            // 5.1
+            // 当前匹配在当前关键帧中的特征点
+            const cv::KeyPoint &kp1 = (pKF->NLeft == -1) ? pKF->mvKeysUn[idx1]
+                                                         : (idx1 < pKF->NLeft) ? pKF->mvKeys[idx1]
+                                                                               : pKF->mvKeysRight[idx1 - pKF->NLeft];
+            // mvuRight中存放着极限校准后双目特征点在右目对应的像素横坐标，如果不是基线校准的双目或者没有找到匹配点，其值将为-1（或者rgbd）
+            const float kp1_ur = pKF->mvuRight[idx1];
+            bool bStereo1 = (!pKF->mpCamera2 && kp1_ur >= 0);
+            // 查看点idx1是否为右目的点
+            const bool bRight1 = !(pKF->NLeft == -1 || idx1 < pKF->NLeft);
+
+
+            // 5.2
+            // 当前匹配在邻接关键帧中的特征点
+            const cv::KeyPoint &kp2 = (pKF2->NLeft == -1) ? pKF2->mvKeysUn[idx2]
+                                                          : (idx2 < pKF2->NLeft) ? pKF2->mvKeys[idx2]
+                                                                                 : pKF2->mvKeysRight[idx2 -
+                                                                                                     pKF2->NLeft];
+            // mvuRight中存放着双目的深度值，如果不是双目，其值将为-1
+            // mvuRight中存放着极限校准后双目特征点在右目对应的像素横坐标，如果不是基线校准的双目或者没有找到匹配点，其值将为-1（或者rgbd）
+            const float kp2_ur = pKF2->mvuRight[idx2];
+            bool bStereo2 = (!pKF2->mpCamera2 && kp2_ur >= 0);
+            // 查看点idx2是否为右目的点
+            const bool bRight2 = !(pKF2->NLeft == -1 || idx2 < pKF2->NLeft);
+
+            // Check parallax between rays
+            // Step 5.4：利用匹配点反投影得到视差角
+            // 特征点反投影,其实得到的是在各自相机坐标系下的一个非归一化的方向向量,和这个点的反投影射线重合
+            Eigen::Vector3f xn1 = pCamera1->unprojectEig(kp1.pt);
+            Eigen::Vector3f xn2 = pCamera2->unprojectEig(kp2.pt);
+            // 由相机坐标系转到世界坐标系(得到的是那条反投影射线的一个同向向量在世界坐标系下的表示,还是只能够表示方向)，得到视差角余弦值
+            Eigen::Vector3f ray1 = Rwc1 * xn1;
+            Eigen::Vector3f ray2 = Rwc2 * xn2;
+            // 这个就是求向量之间角度公式
+            const float cosParallaxRays = ray1.dot(ray2) / (ray1.norm() * ray2.norm());
+
+            // 加1是为了让cosParallaxStereo随便初始化为一个很大的值
+            float cosParallaxStereo = cosParallaxRays + 1;
+            float cosParallaxStereo1 = cosParallaxStereo;
+            float cosParallaxStereo2 = cosParallaxStereo;
+
+            // Step 5.5：对于双目，利用双目得到视差角；单目相机没有特殊操作
+            if (bStereo1)
+                // 传感器是双目相机,并且当前的关键帧的这个点有对应的深度
+                // 假设是平行的双目相机，计算出两个相机观察这个点的时候的视差角;
+                // ? 感觉直接使用向量夹角的方式计算会准确一些啊（双目的时候），那么为什么不直接使用那个呢？
+                // 回答：因为双目深度值、基线是更可靠的，比特征匹配再三角化出来的稳
+                cosParallaxStereo1 = cos(2 * atan2(pKF->mb / 2, pKF->mvDepth[idx1]));
+            else if (bStereo2)
+                //传感器是双目相机,并且邻接的关键帧的这个点有对应的深度，和上面一样操作
+                cosParallaxStereo2 = cos(2 * atan2(pKF2->mb / 2, pKF2->mvDepth[idx2]));
+
+            // 统计用的
+//            if (bStereo1 || bStereo2) totalStereoPts++;
+
+            // 得到双目观测的视差角
+            cosParallaxStereo = min(cosParallaxStereo1, cosParallaxStereo2);
+
+            // Step 5.6：三角化恢复3D点
+            Eigen::Vector3f x3D;
+
+            bool goodProj = false;
+            bool bPointStereo = false;
+            // cosParallaxRays>0 && (bStereo1 || bStereo2 || cosParallaxRays<0.9998)表明视线角正常
+            // cosParallaxRays<cosParallaxStereo表明前后帧视线角比双目视线角大，所以用前后帧三角化而来，反之使用双目的，如果没有双目则跳过
+            // 视差角度小时用三角法恢复3D点，视差角大时（离相机近）用双目恢复3D点（双目以及深度有效）
+            if (cosParallaxRays < cosParallaxStereo && cosParallaxRays > 0 && ((cosParallaxRays < 0.9996 &&
+                                                                                mbInertial) ||
+                                                                               (cosParallaxRays < 0.9998 &&
+                                                                                !mbInertial))) {
+                // 三角化，包装成了函数
+                goodProj = GeometricTools::Triangulate(xn1, xn2, eigTcw1, eigTcw2, x3D);
+                if (!goodProj)
+                    continue;
+            } else {
+                continue; //No stereo and very low parallax
+            }
+
+            // 成功三角化
+            if (goodProj && bPointStereo)
+//                countStereoGoodProj++;
+
+                if (!goodProj)
+                    continue;
+
+            //Check triangulation in front of cameras
+            // Step 5.7：检测生成的3D点是否在相机前方,不在的话就放弃这个点
+            float z1 = Rcw1.row(2).dot(x3D) + tcw1(2);
+            if (z1 <= 0)
+                continue;
+
+            float z2 = Rcw2.row(2).dot(x3D) + tcw2(2);
+            if (z2 <= 0)
+                continue;
+
+            //Check reprojection error in first keyframe
+            // Step 5.7：计算3D点在当前关键帧下的重投影误差
+            const float &sigmaSquare1 = pKF->mvLevelSigma2[kp1.octave];
+            const float x1 = Rcw1.row(0).dot(x3D) + tcw1(0);
+            const float y1 = Rcw1.row(1).dot(x3D) + tcw1(1);
+            const float invz1 = 1.0 / z1;
+
+            // 单目情况下
+            cv::Point2f uv1 = pCamera1->project(cv::Point3f(x1, y1, z1));
+            float errX1 = uv1.x - kp1.pt.x;
+            float errY1 = uv1.y - kp1.pt.y;
+
+            // 假设测量有一个像素的偏差，2自由度卡方检验阈值是5.991
+            if ((errX1 * errX1 + errY1 * errY1) > 5.991 * sigmaSquare1)
+                continue;
+
+            //Check reprojection error in second keyframe
+            // 计算3D点在另一个关键帧下的重投影误差，操作同上
+            const float sigmaSquare2 = pKF2->mvLevelSigma2[kp2.octave];
+            const float x2 = Rcw2.row(0).dot(x3D) + tcw2(0);
+            const float y2 = Rcw2.row(1).dot(x3D) + tcw2(1);
+            const float invz2 = 1.0 / z2;
+            if (!bStereo2) {
+                cv::Point2f uv2 = pCamera2->project(cv::Point3f(x2, y2, z2));
+                float errX2 = uv2.x - kp2.pt.x;
+                float errY2 = uv2.y - kp2.pt.y;
+                if ((errX2 * errX2 + errY2 * errY2) > 5.991 * sigmaSquare2)
+                    continue;
+            } else {
+                float u2 = fx2 * x2 * invz2 + cx2;
+                float u2_r = u2 - pKF->mbf * invz2;
+                float v2 = fy2 * y2 * invz2 + cy2;
+                float errX2 = u2 - kp2.pt.x;
+                float errY2 = v2 - kp2.pt.y;
+                float errX2_r = u2_r - kp2_ur;
+                if ((errX2 * errX2 + errY2 * errY2 + errX2_r * errX2_r) > 7.8 * sigmaSquare2)
+                    continue;
+            }
+
+            //Check scale consistency
+            // Step 5.8：检查尺度连续性
+
+            // 世界坐标系下，3D点与相机间的向量，方向由相机指向3D点
+            Eigen::Vector3f normal1 = x3D - Ow1;
+            float dist1 = normal1.norm();
+
+            Eigen::Vector3f normal2 = x3D - Ow2;
+            float dist2 = normal2.norm();
+
+            if (dist1 == 0 || dist2 == 0)
+                continue;
+
+            if (mpLocalMapper->mbFarPoints &&
+                (dist1 >= mpLocalMapper->mThFarPoints || dist2 >= mpLocalMapper->mThFarPoints)) // MODIFICATION
+                continue;
+            // ratioDist是不考虑金字塔尺度下的距离比例
+            const float ratioDist = dist2 / dist1;
+            // 金字塔尺度因子的比例
+            const float ratioOctave = pKF->mvScaleFactors[kp1.octave] / pKF2->mvScaleFactors[kp2.octave];
+
+            // 距离的比例和图像金字塔的比例不应该差太多，否则就跳过
+            if (ratioDist * ratioFactor < ratioOctave || ratioDist > ratioOctave * ratioFactor)
+                continue;
+
+            // Triangulation is succesfull
+            // Step 6：三角化生成3D点成功，构造成MapPoint
+            MapPoint *pMP = new MapPoint(x3D, pKF, mpAtlas->GetCurrentMap());
+//            if (bPointStereo)
+//                countStereo++;
+
+            // Step 6.1：为该MapPoint添加属性：
+            // a.观测到该MapPoint的关键帧
+            pMP->AddObservation(pKF, idx1);
+            pMP->AddObservation(pKF2, idx2);
+
+            pKF->AddMapPoint(pMP, idx1);
+            pKF2->AddMapPoint(pMP, idx2);
+
+            // b.该MapPoint的描述子
+            pMP->ComputeDistinctiveDescriptors();
+
+            // c.该MapPoint的平均观测方向和深度范围
+            pMP->UpdateNormalAndDepth();
+
+            mpAtlas->AddMapPoint(pMP);
+            // Step 7：将新产生的点放入检测队列
+            // 这些MapPoints都会经过MapPointCulling函数的检验
+//            mlpRecentAddedMapPoints.push_back(pMP);
+        }
+    }
+
+    // 从MonocularInitialization中拷贝过来
+    void Tracking::new_map_point_in_monocular2(KeyFrame *pKF) {
+        // Step 1 将初始关键帧,当前关键帧的描述子转为BoW
+        auto pKFini = pKF;
+        auto pKFcur = pKF->mPrevKF;
+
+        pKFini->ComputeBoW();
+        pKFcur->ComputeBoW();
+
+        // Insert KFs in the map
+        // Step 2 将关键帧插入到地图
+        mpAtlas->AddKeyFrame(pKFini);
+        mpAtlas->AddKeyFrame(pKFcur);
+
+        // Step 3 用初始化得到的3D点来生成地图点MapPoints
+        //  mvIniMatches[i] 表示初始化两帧特征点匹配关系。
+        //  具体解释：i表示帧1中关键点的索引值，vMatches12[i]的值为帧2的关键点索引值,没有匹配关系的话，vMatches12[i]值为 -1
+        for (size_t i = 0; i < mvIniMatches.size(); i++) {
+            // 没有匹配，跳过
+            if (mvIniMatches[i] < 0)
+                continue;
+
+            //Create MapPoint.
+            // 用三角化点初始化为空间点的世界坐标
+            Eigen::Vector3f worldPos;
+            worldPos << mvIniP3D[i].x, mvIniP3D[i].y, mvIniP3D[i].z;
+            // Step 3.1 用3D点构造地图点
+            MapPoint *pMP = new MapPoint(worldPos, pKFcur, mpAtlas->GetCurrentMap());
+
+            // Step 3.2 为该MapPoint添加属性：
+            // a.观测到该MapPoint的关键帧
+            // b.该MapPoint的描述子
+            // c.该MapPoint的平均观测方向和深度范围
+
+            // 表示该KeyFrame的2D特征点和对应的3D地图点
+            pKFini->AddMapPoint(pMP, i);
+            pKFcur->AddMapPoint(pMP, mvIniMatches[i]);
+
+            // a.表示该MapPoint可以被哪个KeyFrame的哪个特征点观测到
+            pMP->AddObservation(pKFini, i);
+            pMP->AddObservation(pKFcur, mvIniMatches[i]);
+
+            // b.从众多观测到该MapPoint的特征点中挑选最有代表性的描述子
+            pMP->ComputeDistinctiveDescriptors();
+
+            // c.更新该MapPoint平均观测方向以及观测距离的范围
+            pMP->UpdateNormalAndDepth();
+
+            //Fill Current Frame structure
+            // mvIniMatches下标i表示在初始化参考帧中的特征点的序号
+            // mvIniMatches[i]是初始化当前帧中的特征点的序号
+            mCurrentFrame.mvpMapPoints[mvIniMatches[i]] = pMP;
+            mCurrentFrame.mvbOutlier[mvIniMatches[i]] = false;
+
+            //Add to Map
+            mpAtlas->AddMapPoint(pMP);
+        }
+
+
+        // Update Connections
+        // Step 3.3 更新关键帧间的连接关系
+        // 在3D点和关键帧之间建立边，每个边有一个权重，边的权重是该关键帧与当前帧公共3D点的个数
+        pKFini->UpdateConnections();
+        pKFcur->UpdateConnections();
+
+        std::set<MapPoint *> sMPs;
+        sMPs = pKFini->GetMapPoints();
+
+        // Bundle Adjustment
+        // Step 4 全局BA优化，同时优化所有位姿和三维点
+        Verbose::PrintMess("New Map created with " + to_string(mpAtlas->MapPointsInMap()) + " points",
+                           Verbose::VERBOSITY_QUIET);
+        Optimizer::GlobalBundleAdjustemnt(mpAtlas->GetCurrentMap(), 20);
+
+        // Step 5 取场景的中值深度，用于尺度归一化
+        // 为什么是 pKFini 而不是 pKCur ? 答：都可以的，内部做了位姿变换了
+        float medianDepth = pKFini->ComputeSceneMedianDepth(2);
+        float invMedianDepth;
+        if (mSensor == System::IMU_MONOCULAR)
+            invMedianDepth = 4.0f / medianDepth; // 4.0f
+        else
+            invMedianDepth = 1.0f / medianDepth;
+
+        // 两个条件,一个是平均深度要大于0,另外一个是在当前帧中被观测到的地图点的数目应该大于50
+        if (medianDepth < 0 || pKFcur->TrackedMapPoints(1) < 50) // TODO Check, originally 100 tracks
+        {
+            Verbose::PrintMess("Wrong initialization, reseting...", Verbose::VERBOSITY_QUIET);
+            mpSystem->ResetActiveMap();
+            return;
+        }
+
+        // Step 6 将两帧之间的变换归一化到平均深度1的尺度下
+        // Scale initial baseline
+        Sophus::SE3f Tc2w = pKFcur->GetPose();
+        // x/z y/z 将z归一化到1
+        Tc2w.translation() *= invMedianDepth;
+        pKFcur->SetPose(Tc2w);
+
+        // Scale points
+        // Step 7 把3D点的尺度也归一化到1
+        // 为什么是pKFini? 是不是就算是使用 pKFcur 得到的结果也是相同的? 答：是的，因为是同样的三维点
+        vector<MapPoint *> vpAllMapPoints = pKFini->GetMapPointMatches();
+        for (size_t iMP = 0; iMP < vpAllMapPoints.size(); iMP++) {
+            if (vpAllMapPoints[iMP]) {
+                MapPoint *pMP = vpAllMapPoints[iMP];
+                pMP->SetWorldPos(pMP->GetWorldPos() * invMedianDepth);
+                pMP->UpdateNormalAndDepth();
+            }
+        }
+
+        // Step 8 将关键帧插入局部地图，更新归一化后的位姿、局部地图点
+        mpLocalMapper->InsertKeyFrame(pKFini);
+        mpLocalMapper->InsertKeyFrame(pKFcur);
+        mpLocalMapper->mFirstTs = pKFcur->mTimeStamp;
+
+        mCurrentFrame.SetPose(pKFcur->GetPose());
+        mnLastKeyFrameId = mCurrentFrame.mnId;
+        mpLastKeyFrame = pKFcur;
+        //mnLastRelocFrameId = mInitialFrame.mnId;
+
+        mvpLocalKeyFrames.push_back(pKFcur);
+        mvpLocalKeyFrames.push_back(pKFini);
+        // 单目初始化之后，得到的初始地图中的所有点都是局部地图点
+        mvpLocalMapPoints = mpAtlas->GetAllMapPoints();
+        mpReferenceKF = pKFcur;
+        mCurrentFrame.mpReferenceKF = pKFcur;
+
+        // Compute here initial velocity
+        vector<KeyFrame *> vKFs = mpAtlas->GetAllKeyFrames();
+
+        Sophus::SE3f deltaT = vKFs.back()->GetPose() * vKFs.front()->GetPoseInverse();
+        mbVelocity = false;
+        Eigen::Vector3f phi = deltaT.so3().log();
+
+        double aux = (mCurrentFrame.mTimeStamp - mLastFrame.mTimeStamp) /
+                     (mCurrentFrame.mTimeStamp - mInitialFrame.mTimeStamp);
+        phi *= aux;
+
+        mLastFrame = Frame(mCurrentFrame);
+
+        mpAtlas->SetReferenceMapPoints(mvpLocalMapPoints);
+
+        mpMapDrawer->SetCurrentCameraPose(pKFcur->GetPose());
+
+        mpAtlas->GetCurrentMap()->mvpKeyFrameOrigins.push_back(pKFini);
+
+        // 初始化成功，至此，初始化过程完成
+        mState = OK;
+
+        initID = pKFcur->mnId;
+    }
 } //namespace ORB_SLAM
