@@ -105,8 +105,8 @@ target_link_libraries(${PROJECT_NAME}
 #        ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
         DBoW2_ORBSLAM3
 #        ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
-        ${Sophus_LIBRARIES}
-#        ${DBoW2_LIBS}
+#        ${Sophus_LIBRARIES}
+#        ${DBoW2_LIBSapt
         ${Boost_LIBRARIES}
         -lcrypto
         g2o_core g2o_stuff g2o_types_sba g2o_types_sim3 g2o_solver_csparse g2o_csparse_extension

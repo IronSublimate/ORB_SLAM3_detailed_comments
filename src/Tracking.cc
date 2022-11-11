@@ -3267,7 +3267,7 @@ namespace ORB_SLAM3 {
                     mCurrentFrame.mvpMapPoints[i] = static_cast<MapPoint *>(NULL);
             }
         }
-        std::cerr << "mnMatchesInliers: " << mnMatchesInliers << "\n";
+//        std::cerr << "mnMatchesInliers: " << mnMatchesInliers << "\n";
         // Decide if the tracking was successful
         // More restrictive if there was a relocalization recently
         mpLocalMapper->mnMatchesInliers = mnMatchesInliers;
