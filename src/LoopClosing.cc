@@ -704,8 +704,11 @@ bool LoopClosing::DetectAndReffineSim3FromLastKF(KeyFrame* pCurrentKF, KeyFrame*
         if(numOptMatches > nProjOptMatches)
         {
             //!bug, 以下gScw_estimation应该通过上述sim3优化后的位姿来更新。以下mScw应该改为 gscm * gswm^-1
-            g2o::Sim3 gScw_estimation(Converter::toMatrix3d(mScw.rowRange(0, 3).colRange(0, 3)),
-                           Converter::toVector3d(mScw.rowRange(0, 3).col(3)),1.0);
+//            g2o::Sim3 gScw_estimation(Converter::toMatrix3d(mScw.rowRange(0, 3).colRange(0, 3)),
+//                           Converter::toVector3d(mScw.rowRange(0, 3).col(3)),1.0);
+            auto scw = Converter::toCvMat(gScm * gSwm.inverse());
+            g2o::Sim3 gScw_estimation(Converter::toMatrix3d(scw.rowRange(0, 3).colRange(0, 3)),
+                           Converter::toVector3d(scw.rowRange(0, 3).col(3)),1.0);
 
             vector<MapPoint*> vpMatchedMP;
             vpMatchedMP.resize(mpCurrentKF->GetMapPointMatches().size(), static_cast<MapPoint*>(NULL));
