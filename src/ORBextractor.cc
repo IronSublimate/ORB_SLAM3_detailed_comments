@@ -1625,11 +1625,12 @@ namespace ORB_SLAM3 {
                 //把源图像拷贝到目的图像的中央，四面填充指定的像素。图片如果已经拷贝到中间，只填充边界
                 //TODO 貌似这样做是因为在计算描述子前，进行高斯滤波的时候，图像边界会导致一些问题，说不明白
                 //EDGE_THRESHOLD指的这个边界的宽度，由于这个边界之外的像素不是原图像素而是算法生成出来的，所以不能够在EDGE_THRESHOLD之外提取特征点
-                copyMakeBorder(mvImagePyramid[level],                    //源图像
-                               temp,                                    //目标图像（此时其实就已经有大了一圈的尺寸了）
-                               EDGE_THRESHOLD, EDGE_THRESHOLD,            //top & bottom 需要扩展的border大小
-                               EDGE_THRESHOLD, EDGE_THRESHOLD,            //left & right 需要扩展的border大小
-                               BORDER_REFLECT_101 + BORDER_ISOLATED);     //扩充方式，opencv给出的解释：
+                //hyx:感觉这个可以注释掉
+//                copyMakeBorder(mvImagePyramid[level],                    //源图像
+//                               temp,                                    //目标图像（此时其实就已经有大了一圈的尺寸了）
+//                               EDGE_THRESHOLD, EDGE_THRESHOLD,            //top & bottom 需要扩展的border大小
+//                               EDGE_THRESHOLD, EDGE_THRESHOLD,            //left & right 需要扩展的border大小
+//                               BORDER_REFLECT_101 + BORDER_ISOLATED);     //扩充方式，opencv给出的解释：
 
                 /*Various border types, image boundaries are denoted with '|'
                 * BORDER_REPLICATE:     aaaaaa|abcdefgh|hhhhhhh
