@@ -144,12 +144,14 @@ using namespace std;
         std::chrono::steady_clock::time_point time_StartExtORB = std::chrono::steady_clock::now();
 #endif
         // Step 3 对左目右目图像提取ORB特征点, 第一个参数0-左图， 1-右图。为加速计算，同时开了两个线程计算
-        thread threadLeft(&Frame::ExtractORB, this, 0, imLeft, 0, 0);
-        // 对右目图像提取orb特征
-        thread threadRight(&Frame::ExtractORB, this, 1, imRight, 0, 0);
-        // 等待两张图像特征点提取过程完成
-        threadLeft.join();
-        threadRight.join();
+//        thread threadLeft(&Frame::ExtractORB, this, 0, imLeft, 0, 0);
+//        // 对右目图像提取orb特征
+//        thread threadRight(&Frame::ExtractORB, this, 1, imRight, 0, 0);
+//        // 等待两张图像特征点提取过程完成
+//        threadLeft.join();
+//        threadRight.join();
+        ExtractORB(0, imLeft, 0, 0);
+        ExtractORB(1, imRight, 0, 0);
 #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point time_EndExtORB = std::chrono::steady_clock::now();
 
@@ -1421,14 +1423,16 @@ using namespace std;
 #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point time_StartExtORB = std::chrono::steady_clock::now();
 #endif
-        thread threadLeft(&Frame::ExtractORB, this, 0, imLeft,
-                          static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[0],
-                          static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[1]);
-        thread threadRight(&Frame::ExtractORB, this, 1, imRight,
-                           static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[0],
-                           static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[1]);
-        threadLeft.join();
-        threadRight.join();
+//        thread threadLeft(&Frame::ExtractORB, this, 0, imLeft,
+//                          static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[0],
+//                          static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[1]);
+//        thread threadRight(&Frame::ExtractORB, this, 1, imRight,
+//                           static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[0],
+//                           static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[1]);
+//        threadLeft.join();
+//        threadRight.join();
+        ExtractORB(0, imLeft,static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[0],static_cast<KannalaBrandt8 *>(mpCamera)->mvLappingArea[1]);
+        ExtractORB(1, imRight,static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[0],static_cast<KannalaBrandt8 *>(mpCamera2)->mvLappingArea[1]);
 #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point time_EndExtORB = std::chrono::steady_clock::now();
 
