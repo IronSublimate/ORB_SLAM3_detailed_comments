@@ -49,7 +49,7 @@ find_package(Sophus REQUIRED)
 find_package(g2o REQUIRED)
 find_package(realsense2)
 find_package(fmt REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system serialization)
+find_package(Boost REQUIRED COMPONENTS system serialization filesystem)
 
 include_directories(
         ${PROJECT_SOURCE_DIR}

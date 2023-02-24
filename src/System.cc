@@ -28,14 +28,14 @@
 #include <pangolin/pangolin.h>
 #include <iomanip>
 #include <openssl/md5.h>
-#include <boost/serialization/base_object.hpp>
-#include <boost/serialization/string.hpp>
+//#include <boost/serialization/base_object.hpp>
+//#include <boost/serialization/string.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
-#include <boost/archive/xml_iarchive.hpp>
-#include <boost/archive/xml_oarchive.hpp>
+//#include <boost/archive/xml_iarchive.hpp>
+//#include <boost/archive/xml_oarchive.hpp>
 
 #include <opencv2/imgproc/imgproc.hpp>
 
@@ -1265,7 +1265,7 @@ namespace ORB_SLAM3 {
         Sophus::SE3f Tow = vpKFs[0]->GetPoseInverse();
 
         ofstream f;
-        f.open(filename.c_str());
+        f.open(filename);
         f << fixed;
 
         // Frame pose is stored relative to its reference keyframe (which is optimized by BA and pose graph).

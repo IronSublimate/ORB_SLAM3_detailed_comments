@@ -129,7 +129,7 @@ void KeyFrame::SetPose(const Sophus::SE3f &Tcw)
 
     if (mImuCalib.mbIsSet) // TODO Use a flag instead of the OpenCV matrix
     {
-        mOwb = mRwc * mImuCalib.mTcb.translation() + mTwc.translation();
+        mOwb = mRwc * mImuCalib.mTcb.translation() + mTwc.translation();//O代表平移？
     }
 }
 
@@ -167,6 +167,7 @@ Eigen::Vector3f KeyFrame::GetImuPosition()
     return mOwb;
 }
 
+//获取IMU在世界坐标系下的旋转，是用相机的数据算的
 Eigen::Matrix3f KeyFrame::GetImuRotation()
 {
     unique_lock<mutex> lock(mMutexPose);
