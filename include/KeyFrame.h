@@ -445,9 +445,9 @@ protected:
     Eigen::Matrix3f mRwc;
 
     // IMU position
-    Eigen::Vector3f mOwb;
+    Eigen::Vector3f mOwb; //根据相机Rwc和外参算出来的
     // Velocity (Only used for inertial SLAM)
-    Eigen::Vector3f mVw;
+    Eigen::Vector3f mVw; //根据IMU position算出来的速度，相邻两帧平移相减/路程
     bool mbHasVelocity;
 
     //Transformation matrix between cameras in stereo fisheye

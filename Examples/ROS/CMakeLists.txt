@@ -45,7 +45,7 @@ find_package(Eigen3 REQUIRED)
 find_package(Pangolin REQUIRED)
 find_package(g2o REQUIRED)
 find_package(OpenMP REQUIRED)
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg cv_bridge message_filters cpp_common rosconsole rosconsole_bridge rosbag)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg cv_bridge message_filters cpp_common rosconsole rosconsole_bridge rosbag message_generation)
 find_package(Boost REQUIRED COMPONENTS system serialization)
 
 

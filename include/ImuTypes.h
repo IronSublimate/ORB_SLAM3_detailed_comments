@@ -123,7 +123,7 @@ public:
     Sophus::SE3<float> mTcb;
     Sophus::SE3<float> mTbc;
     Eigen::DiagonalMatrix<float,6> Cov, CovWalk;
-    bool mbIsSet;
+    bool mbIsSet; //应该是用了IMU就是true
 };
 
 //Integration of 1 gyro measurement
@@ -218,7 +218,7 @@ public:
     Bias b;
     Eigen::Matrix3f dR;
     Eigen::Vector3f dV, dP;
-    Eigen::Matrix3f JRg, JVg, JVa, JPg, JPa;
+    Eigen::Matrix3f JRg, JVg, JVa, JPg, JPa; //雅可比？
     Eigen::Vector3f avgA, avgW;
 
 
