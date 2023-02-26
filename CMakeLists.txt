@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.8)
 project(ORB_SLAM3)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -22,23 +22,6 @@ add_subdirectory(Thirdparty/DBoW2 ${CMAKE_CURRENT_BINARY_DIR}/DBoW2)
 #add_subdirectory(Thirdparty/Sophus)
 add_subdirectory(Examples/ROS ${CMAKE_CURRENT_BINARY_DIR}/ROS)
 
-# Check C++11 or C++0x support
-#include(CheckCXXCompilerFlag)
-#CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-#CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-#if(COMPILER_SUPPORTS_CXX11)
-#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-#   add_definitions(-DCOMPILEDWITHC11)
-#   message(STATUS "Using flag -std=c++11.")
-#elseif(COMPILER_SUPPORTS_CXX0X)
-#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-#   add_definitions(-DCOMPILEDWITHC0X)
-#   message(STATUS "Using flag -std=c++0x.")
-#else()
-#   message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-#endif()
-
-
 #LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
 find_package(OpenCV REQUIRED)
@@ -55,7 +38,7 @@ include_directories(
         ${PROJECT_SOURCE_DIR}
         ${PROJECT_SOURCE_DIR}/include
         ${PROJECT_SOURCE_DIR}/include/CameraModels
-        #${PROJECT_SOURCE_DIR}/Thirdparty/Sophus
+        ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2
         ${EIGEN3_INCLUDE_DIRS}
         ${Pangolin_INCLUDE_DIRS}
         ${Sophus_INCLUDE_DIRS}
@@ -105,11 +88,11 @@ target_link_libraries(${PROJECT_NAME}
 #        ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
         DBoW2_ORBSLAM3
 #        ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
-#        ${Sophus_LIBRARIES}
+        ${Sophus_LIBRARIES}
 #        ${DBoW2_LIBSapt
         ${Boost_LIBRARIES}
         -lcrypto
-        g2o_core g2o_stuff g2o_types_sba g2o_types_sim3 g2o_solver_csparse g2o_csparse_extension
+        g2o_core g2o_stuff g2o_types_sba g2o_types_sim3
         fmt::fmt
         )
 
