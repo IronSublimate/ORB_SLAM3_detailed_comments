@@ -31,10 +31,10 @@ set(SRCS_DUTILS
 
 
 find_package(OpenCV REQUIRED)
-
+find_package(Boost REQUIRED COMPONENTS serialization)
 #set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 add_library(DBoW2_ORBSLAM3 SHARED ${SRCS_DBOW2} ${SRCS_DUTILS})
-target_include_directories(DBoW2_ORBSLAM3 PUBLIC ${OpenCV_INCLUDE_DIRS})
+target_include_directories(DBoW2_ORBSLAM3 PUBLIC ${OpenCV_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 target_link_libraries(DBoW2_ORBSLAM3 ${OpenCV_LIBS})
 

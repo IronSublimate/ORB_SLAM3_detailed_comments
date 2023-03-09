@@ -17,6 +17,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=native")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
 
+
+
+include(cmake/3rdparty.cmake)
+
 add_subdirectory(Thirdparty/DBoW2 ${CMAKE_CURRENT_BINARY_DIR}/DBoW2)
 #add_subdirectory(Thirdparty/g2o)
 #add_subdirectory(Thirdparty/Sophus)
@@ -26,12 +30,14 @@ add_subdirectory(Examples/ROS ${CMAKE_CURRENT_BINARY_DIR}/ROS)
 
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(Pangolin REQUIRED)
+#find_package(Pangolin REQUIRED)
 #find_package(DBoW2 REQUIRED)
-find_package(Sophus REQUIRED)
-find_package(g2o REQUIRED)
+#find_package(Sophus REQUIRED)
+#find_package(g2o REQUIRED)
 find_package(realsense2)
 find_package(fmt REQUIRED)
+find_package(Pangolin REQUIRED)
+#find_package(OpenSSL REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system serialization filesystem)
 
 include_directories(
@@ -40,12 +46,14 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/include/CameraModels
         ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2
         ${EIGEN3_INCLUDE_DIRS}
+        ${CMAKE_BINARY_DIR}/INSTALL/include
         ${Pangolin_INCLUDE_DIRS}
-        ${Sophus_INCLUDE_DIRS}
-        ${G2O_INCLUDE_DIRS}
-        ${Boost_INCLUDE_DIRS}
+#        ${Sophus_INCLUDE_DIRS}
+#        ${G2O_INCLUDE_DIRS}
+        ${Boost_INCLUDE_DIR}
+#        ${OPENSSL_INCLUDE_DIR}
 )
-
+link_directories(${CMAKE_BINARY_DIR}/INSTALL/lib)
 #set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 add_library(${PROJECT_NAME} SHARED
@@ -78,21 +86,21 @@ add_library(${PROJECT_NAME} SHARED
         src/Config.cc
         src/Settings.cc
         )
-
-#add_subdirectory(Thirdparty/g2o)
+add_dependencies(${PROJECT_NAME} g2o sophus)
+#SET( Pangolin_LIBRARIES    pango_core;pango_display;pango_geometry;pango_glgeometry;pango_image;pango_opengl;pango_packetstream;pango_plot;pango_python;pango_scene;pango_tools;pango_vars;pango_video;pango_windowing;tinyobj )
 
 target_link_libraries(${PROJECT_NAME}
         ${OpenCV_LIBS}
         ${EIGEN3_LIBS}
-        ${Pangolin_LIBRARIES}
 #        ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
         DBoW2_ORBSLAM3
 #        ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
-        ${Sophus_LIBRARIES}
+#        ${Sophus_LIBRARIES}
 #        ${DBoW2_LIBSapt
         ${Boost_LIBRARIES}
-        -lcrypto
+#        ${OPENSSL_LIBRARIES}
         g2o_core g2o_stuff g2o_types_sba g2o_types_sim3
+        ${Pangolin_LIBRARIES}
         fmt::fmt
         )
 

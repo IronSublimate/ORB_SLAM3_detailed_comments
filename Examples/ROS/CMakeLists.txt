@@ -33,7 +33,7 @@ add_definitions(-DCOMPILEDWITHC11)
 
 #LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../../../cmake_modules)
 
-find_package(OpenCV 4 REQUIRED)
+find_package(OpenCV REQUIRED)
 #if(NOT OpenCV_FOUND)
 #   find_package(OpenCV 2.4.3 QUIET)
 #   if(NOT OpenCV_FOUND)
@@ -42,9 +42,9 @@ find_package(OpenCV 4 REQUIRED)
 #endif()
 
 find_package(Eigen3 REQUIRED)
-find_package(Pangolin REQUIRED)
-find_package(g2o REQUIRED)
-find_package(OpenMP REQUIRED)
+#find_package(Pangolin REQUIRED)
+#find_package(g2o REQUIRED)
+#find_package(OpenMP REQUIRED)
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg cv_bridge message_filters cpp_common rosconsole rosconsole_bridge rosbag message_generation)
 find_package(Boost REQUIRED COMPONENTS system serialization)
 
@@ -54,9 +54,9 @@ include_directories(
         ../../include
         ../../include/CameraModels
 #        ${CMAKE_CURRENT_SOURCE_DIR}/../../../Thirdparty/Sophus
-        ${Pangolin_INCLUDE_DIRS}
-        ${Sophus_INCLUDE_DIRS}
-        ${G2O_INCLUDE_DIRS}
+#        ${Pangolin_INCLUDE_DIRS}
+#        ${Sophus_INCLUDE_DIRS}
+#        ${G2O_INCLUDE_DIRS}
         ${catkin_INCLUDE_DIRS}
         ${Boost_INCLUDE_DIRS}
 )
@@ -67,17 +67,17 @@ include_directories(
 set(LIBS
         ${OpenCV_LIBS}
         ${EIGEN3_LIBS}
-        ${Pangolin_LIBRARIES}
+#        ${Pangolin_LIBRARIES}
         ${catkin_LIBRARIES}
 
         ${Boost_LIBRARIES}
 #        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/DBoW2/lib/libDBoW2.so
-        DBoW2_ORBSLAM3
+#        DBoW2_ORBSLAM3
 #        ${PROJECT_SOURCE_DIR}/../../../Thirdparty/g2o/lib/libg2o.so
 #        ${PROJECT_SOURCE_DIR}/../../../lib/libORB_SLAM3.so
 #        ${DBoW2_LIBS}
-        g2o_core g2o_stuff g2o_types_sba g2o_types_sim3 g2o_solver_csparse g2o_csparse_extension
-        OpenMP::OpenMP_CXX
+#        g2o_core g2o_stuff g2o_types_sba g2o_types_sim3 g2o_solver_csparse g2o_csparse_extension
+#        OpenMP::OpenMP_CXX
         ORB_SLAM3
         )
 

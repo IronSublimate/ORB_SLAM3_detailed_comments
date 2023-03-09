@@ -18,6 +18,7 @@
 #include <thread>
 
 #include <sophus/se3.hpp>
+#include <opencv2/core/mat.hpp> //否则会报error: member access into incomplete type 'cv::Mat'
 #include "SerializationUtils.h"
 
 #include "Atlas.h"
