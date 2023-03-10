@@ -50,6 +50,7 @@ int main(int argc, char **argv) {
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
     ORB_SLAM3::System SLAM(argv[1], argv[2], ORB_SLAM3::System::STEREO, true);
+//    ORB_SLAM3::System SLAM(argv[1], argv[2], ORB_SLAM3::System::STEREO, true, 0, {}, true);
     float imageScale = SLAM.GetImageScale();
 
     // Vector for tracking time statistics
@@ -60,8 +61,8 @@ int main(int argc, char **argv) {
     cout << "Start processing sequence ..." << endl;
     cout << "Images in the sequence: " << nImages << endl << endl;
 
-    double t_track = 0.f;
-    double t_resize = 0.f;
+    double t_track = 0.;
+    double t_resize = 0.;
 
     // Main loop
     cv::Mat imLeft, imRight;
@@ -151,17 +152,20 @@ int main(int argc, char **argv) {
     // Save camera trajectory
     {
         std::string path(argv[3]);
+        if (path.back() == '/') {
+            path.pop_back();
+        }
         auto ret = path.rfind('/');
         std::string id = path.substr(ret + 1, path.size() - ret - 1);
 
         std::time_t time = std::time({});
         char timeString[std::size("yyyy-mm-dd-hh-mm-ss")];
         std::strftime(std::data(timeString), std::size(timeString), "%Y-%m-%d-%H-%M-%S", std::gmtime(&time));
-        std::string save_dir = "output/kitti360/" + id ;
+        std::string save_dir = "output/kitti360/" + id;
         boost::filesystem::path dir(save_dir);
         boost::filesystem::create_directories(dir);
 
-        SLAM.SaveTrajectoryKITTI( save_dir+ '/' + timeString + ".txt");
+        SLAM.SaveTrajectoryKITTI(save_dir + '/' + timeString + ".txt");
     }
 
     return 0;
@@ -172,23 +176,23 @@ int main(int argc, char **argv) {
  * @param s
  * @return
  */
-double string_to_unix_time(const std::string& datetime_str){
+double string_to_unix_time(const std::string &datetime_str) {
     auto p = datetime_str.find('.');
-    if(p==datetime_str.size()){
+    if (p == datetime_str.size()) {
         return 0;
     }
-    std::istringstream is(datetime_str.substr(p,datetime_str.size()-p));
+    std::istringstream is(datetime_str.substr(p, datetime_str.size() - p));
     double d;
-    is>>d;
+    is >> d;
 
     std::tm tm = {};
-    std::istringstream ss(datetime_str.substr(0,p));
+    std::istringstream ss(datetime_str.substr(0, p));
     ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
 
     auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
     auto unix_timestamp = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
 
-    return double (unix_timestamp) + d;
+    return double(unix_timestamp) + d;
 }
 
 void LoadImages(const string &strPathToSequence, vector<string> &vstrImageLeft,

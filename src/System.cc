@@ -256,7 +256,7 @@ namespace ORB_SLAM3 {
         mpLoopCloser = new LoopClosing(mpAtlas, mpKeyFrameDatabase, mpVocabulary, mSensor != MONOCULAR,
                                        activeLC); // mSensor!=MONOCULAR);
         if(not this->only_tracking) {
-            mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
+//            mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
         }
 
         //Set pointers between threads
@@ -296,7 +296,7 @@ namespace ORB_SLAM3 {
         }
         delete this->mptViewer;
         delete this->mptLocalMapping;
-        delete this->mptLoopClosing;
+//        delete this->mptLoopClosing;
 
         delete this->mpLoopCloser;
         delete this->mpTracker;
@@ -619,7 +619,7 @@ namespace ORB_SLAM3 {
             SaveAtlas(FileType::BINARY_FILE);
         }
         this->mptLocalMapping->join();
-        this->mptLoopClosing->join();
+//        this->mptLoopClosing->join();
         if (this->mptViewer) {
             this->mptViewer->join();
         }
