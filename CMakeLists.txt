@@ -86,7 +86,7 @@ add_library(${PROJECT_NAME} SHARED
         src/Config.cc
         src/Settings.cc
         )
-add_dependencies(${PROJECT_NAME} g2o sophus)
+#add_dependencies(${PROJECT_NAME} g2o sophus)
 #SET( Pangolin_LIBRARIES    pango_core;pango_display;pango_geometry;pango_glgeometry;pango_image;pango_opengl;pango_packetstream;pango_plot;pango_python;pango_scene;pango_tools;pango_vars;pango_video;pango_windowing;tinyobj )
 
 target_link_libraries(${PROJECT_NAME}

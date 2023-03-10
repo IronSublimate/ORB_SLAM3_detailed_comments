@@ -30,4 +30,4 @@ ExternalProject_Add(sophus
 #        -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/INSTALL
 #        )
 
-
+add_custom_target(3rdparty DEPENDS g2o sophus)
