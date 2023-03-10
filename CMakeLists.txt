@@ -25,6 +25,7 @@ add_subdirectory(Thirdparty/DBoW2 ${CMAKE_CURRENT_BINARY_DIR}/DBoW2)
 #add_subdirectory(Thirdparty/g2o)
 #add_subdirectory(Thirdparty/Sophus)
 add_subdirectory(Examples/ROS ${CMAKE_CURRENT_BINARY_DIR}/ROS)
+add_subdirectory(experiment ${CMAKE_CURRENT_BINARY_DIR}/experiment)
 
 #LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
