@@ -37,6 +37,7 @@ find_package(Eigen3 REQUIRED)
 find_package(realsense2)
 find_package(fmt REQUIRED)
 find_package(Pangolin REQUIRED)
+find_package(OpenMP REQUIRED)
 #find_package(OpenSSL REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system serialization filesystem)
 
@@ -102,6 +103,7 @@ target_link_libraries(${PROJECT_NAME}
         g2o_core g2o_stuff g2o_types_sba g2o_types_sim3
         ${Pangolin_LIBRARIES}
         fmt::fmt
+        OpenMP::OpenMP_CXX
         )
 
 # If RealSense SDK is found the library is added and its examples compiled
