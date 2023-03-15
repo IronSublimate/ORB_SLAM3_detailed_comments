@@ -132,8 +132,8 @@ int main(int argc, char **argv) {
         else if (ni > 0)
             T = tframe - vTimestamps[ni - 1];
 
-        if (ttrack < T)
-            usleep((T - ttrack) * 1e6);
+//        if (ttrack < T)
+//            usleep((T - ttrack) * 1e6);
     }
 
     // Stop all threads
@@ -165,7 +165,8 @@ int main(int argc, char **argv) {
         boost::filesystem::path dir(save_dir);
         boost::filesystem::create_directories(dir);
 
-        SLAM.SaveTrajectoryKITTI(save_dir + '/' + timeString + ".txt");
+//        SLAM.SaveTrajectoryKITTI(save_dir + '/' + timeString + ".txt");
+        SLAM.SaveTrajectoryTUM(save_dir + '/' + timeString + ".txt");
     }
 
     return 0;
